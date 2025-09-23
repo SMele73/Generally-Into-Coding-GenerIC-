@@ -1,5 +1,7 @@
 # Generally-Into-Coding-GenerIC-
-Chess game 
-Edit the repository README file to include class, team member, and any other information you like.
+**Chess game**
 Object Oriented Programming and Design
 CS.3354.R01
+Collaborator: Kevin Krakar
+
+**Phase 1:** Develop console based .java chess game. 
