@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="173f65d5-7358-46c9-a920-218ced488e2c" name="Changes" comment="Initial project structure">
-      <changelist_data name="Kevin" email="" automatic="false" />
-      <change afterPath="$PROJECT_DIR$/src/Chess.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/board/Square.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/piece/Piece.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/board/board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/board/Board.java" afterDir="false" />
-    </list>
+    <list default="true" id="173f65d5-7358-46c9-a920-218ced488e2c" name="Changes" comment="Working on board, added some .txt design files" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -37,10 +31,18 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Kevin-K16"
-  }
+  "lastFilter": {}
+}]]></component>
+  <component name="GitHubPullRequestState"><![CDATA[{
+  "prStates": [
+    {
+      "id": {
+        "id": "PR_kwDOPyAWA86p9x1f",
+        "number": 1
+      },
+      "lastSeen": 1759008558600
+    }
+  ]
 }]]></component>
   <component name="GithubPullRequestsUISettings"><![CDATA[{
   "selectedUrlAndAccountId": {
@@ -48,6 +50,9 @@
     "accountId": "7812a614-1ced-4038-802c-0a46682da424"
   }
 }]]></component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo"><![CDATA[{
   "associatedIndex": 5
 }]]></component>
@@ -93,7 +98,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1759001470003</updated>
-      <workItem from="1759001470906" duration="6724000" />
+      <workItem from="1759001470906" duration="7307000" />
     </task>
     <task id="LOCAL-00001" summary="Initial project structure">
       <option name="closed" value="true" />
@@ -111,7 +116,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759002616639</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Working on board, added some .txt design files">
+      <option name="closed" value="true" />
+      <created>1759008459689</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1759008459689</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -119,6 +132,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial project structure" />
-    <option name="LAST_COMMIT_MESSAGE" value="Initial project structure" />
+    <MESSAGE value="Working on board, added some .txt design files" />
+    <option name="LAST_COMMIT_MESSAGE" value="Working on board, added some .txt design files" />
   </component>
 </project>

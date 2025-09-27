@@ -59,7 +59,7 @@ public class Board {
         System.out.println("  A  B  C  D  E  F  G  H");
         for (int r = 8; r > 0; r--) {
             System.out.print(r + " ");
-            for (int f = 1; f < NUMFILES; f++) {
+            for (int f = 1; f <= NUMFILES; f++) {
                 //if (getPiece(r, f) != null) Display piece if there is one
                 //else if
                 if ((r + f) % 2 == 0)
