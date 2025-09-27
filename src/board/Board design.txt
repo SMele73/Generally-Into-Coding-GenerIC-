@@ -1,0 +1,16 @@
+Board design
+rank – horizontal row 1-8, 1 is white
+file – vertical row a-h, a is white's queenside pawn
+queen on own color
+move notation is letter (file), number (rank)
+
+A8	H8
+A1	H1
+
+However, java reads 2D arrays as row, column from the top
+Array counting should therefore start at highest index (8) and move down.
+Additionally, the letter should be the second part of the array in the program even though it's the first in proper chess notation
+
+Suggest converting a-h to 1-8, should make calculations easier to handle
+Suggest all pieces be attached to a numbered list for check/checkmate calculations
+

@@ -1,0 +1,19 @@
+Piece list
+Reserve 0, if only to make counting things easier.
+White
+1-8 pawns, left to right
+9/10 bishops, left first
+11/12 knights, left first
+13/14 rooks, left first
+15 queen
+16 king
+
+Black
+17-24 pawns, left to right
+25/26 bishops, left first
+27/28 knights, left first
+29/30 rooks, left first
+31 queen
+32 king
+
+Though on further reflection I don't think this is necessary at all, so probably skip it
