@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="173f65d5-7358-46c9-a920-218ced488e2c" name="Changes" comment="Working on board, added some .txt design files" />
+    <list default="true" id="173f65d5-7358-46c9-a920-218ced488e2c" name="Changes" comment="Column H now prints">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Generally-Into-Coding-GenerIC-/board/Board design.txt" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Generally-Into-Coding-GenerIC-/board/Board design.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/board/Board design.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/board/Board design.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/board/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/board/Board.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/board/Square.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/board/Square.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -40,7 +46,7 @@
         "id": "PR_kwDOPyAWA86p9x1f",
         "number": 1
       },
-      "lastSeen": 1759008558600
+      "lastSeen": 1759009136395
     }
   ]
 }]]></component>
@@ -48,6 +54,16 @@
   "selectedUrlAndAccountId": {
     "url": "https://github.com/SMele73/Generally-Into-Coding-GenerIC-",
     "accountId": "7812a614-1ced-4038-802c-0a46682da424"
+  },
+  "recentNewPullRequestHead": {
+    "server": {
+      "useHttp": false,
+      "host": "github.com",
+      "port": null,
+      "suffix": null
+    },
+    "owner": "SMele73",
+    "repository": "Generally-Into-Coding-GenerIC-"
   }
 }]]></component>
   <component name="ProblemsViewState">
@@ -71,7 +87,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "KevDev",
+    "git-widget-placeholder": "#3 on KevDev",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -98,7 +114,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1759001470003</updated>
-      <workItem from="1759001470906" duration="7307000" />
+      <workItem from="1759001470906" duration="11020000" />
     </task>
     <task id="LOCAL-00001" summary="Initial project structure">
       <option name="closed" value="true" />
@@ -124,7 +140,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759008459689</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Column H now prints">
+      <option name="closed" value="true" />
+      <created>1759008866122</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1759008866122</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -133,6 +157,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial project structure" />
     <MESSAGE value="Working on board, added some .txt design files" />
-    <option name="LAST_COMMIT_MESSAGE" value="Working on board, added some .txt design files" />
+    <MESSAGE value="Column H now prints" />
+    <option name="LAST_COMMIT_MESSAGE" value="Column H now prints" />
   </component>
 </project>

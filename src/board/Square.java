@@ -4,56 +4,63 @@ import piece.Piece;
 
 public class Square {
     //Private attributes
-    private int file;
-    private Character fileLetter;
-    private int rank;
+    //Should be file and rank to be formal chess notation, but column and row will greatly reduce confusion
+    private int col;
+    private Character colLetter;
+    private int row;
     private Piece piece;
 
     //Default constructor
-    public Square(int file, int rank) {
-        this.file = file;
-        this.rank = rank;
-        switch(file) {
+    public Square(int f, int r) {
+        piece = null;
+        col = f;
+        row = r;
+        //Yes, there's a much more elegant way to do this. No, I'm not taking the time to implement it.
+        switch(col) {
             case 1:
-                fileLetter = 'A';
+                colLetter = 'A';
                 break;
             case 2:
-                fileLetter = 'B';
+                colLetter = 'B';
                 break;
             case 3:
-                fileLetter = 'C';
+                colLetter = 'C';
                 break;
             case 4:
-                fileLetter = 'D';
+                colLetter = 'D';
                 break;
             case 5:
-                fileLetter = 'E';
+                colLetter = 'E';
                 break;
             case 6:
-                fileLetter = 'F';
+                colLetter = 'F';
                 break;
             case 7:
-                fileLetter = 'G';
+                colLetter = 'G';
                 break;
             case 8:
-                fileLetter = 'H';
+                colLetter = 'H';
                 break;
         }
     }
 
     //Getters
-    public int getFile() {
-        return file;
+    public int getColumn() {
+        return col;
     }
-    public int getRank() {
-        return rank;
+    public int getRow() {
+        return row;
+    }
+    public Piece getPiece() {
+        return piece;
     }
 
     //Setters
-    public void setFile(int file) {
-        this.file = file;
+    public void setColumn(int c) {
+        col = c;
     }
-    public void setRank(int rank) {
-        this.rank = rank;
+    public void setRow(int r) {
+        row = r;
     }
+    //Todo: Setter for piece goes here. Exact wording depends on piece attributes
 }

@@ -6,10 +6,14 @@ import java.util.ArrayList;
 
 public class Board {
     /**Private attributes*/
-    final int NUMFILES = 8;
-    final int NUMRANKS = 8;
+    //This wastes 17/81 of the array but the game is not exactly big enough to suffer from lack of optimization
+    //and it will be much easier to work with
+    final int NUMCOLUMNS = 9;
+    final int NUMROWS = 9;
 
-    private final Square[][] squares = new Square[NUMRANKS][NUMFILES];
+    //Declare board's squares
+    private final Square[][] squares = new Square[NUMROWS][NUMCOLUMNS];
+
     private Piece piece;
     //private Array pieceStatus -- Single Boolean array for capture instead of 2 array lists?
     private ArrayList<Piece> livePieces;
@@ -17,6 +21,13 @@ public class Board {
 
     //Default constructor
     public Board() {
+        //Initialize squares
+        for (int r = NUMROWS-1; r > 0; r--) {
+            for (int c = 1; c < NUMCOLUMNS; c++) {
+                squares[r][c] = new Square(r, c);
+            }
+        }
+        //Todo: Shuffle some of this
         //Initialize full livePieces;
         //Initialize empty capturedPieces;
         //Place pieces on board;
@@ -57,12 +68,13 @@ public class Board {
     //public Boolean isCheck(Color color) {}
     public void displayBoard() {
         System.out.println("  A  B  C  D  E  F  G  H");
-        for (int r = 8; r > 0; r--) {
+        for (int r = NUMROWS-1; r > 0; r--) {
             System.out.print(r + " ");
-            for (int f = 1; f <= NUMFILES; f++) {
-                //if (getPiece(r, f) != null) Display piece if there is one
-                //else if
-                if ((r + f) % 2 == 0)
+            for (int f = 1; f < NUMCOLUMNS; f++) {
+                Square square = squares[r][f];
+                if (square.getPiece() != null)
+                    System.out.print("PH ");  //Display piece if there is one (currently displaying placeholder text)
+                else if ((r + f) % 2 == 0)
                     System.out.print("## ");
                 else
                     System.out.print("   ");
