@@ -13,7 +13,6 @@ Additionally, the letter should be the second part of the array
 in the program even though it's the first in proper chess notation
 
 Suggest converting a-h to 1-8, should make calculations easier to handle
-Suggest all pieces be attached to a numbered list for check/checkmate calculations
 
 
 A slightly more "elegant" string to index converter.
