@@ -16,8 +16,7 @@ public class Board {
 
     private Piece piece;
     //private Array pieceStatus -- Single Boolean array for capture instead of 2 array lists?
-    private ArrayList<Piece> livePieces;
-    private ArrayList<Piece> capturedPieces;
+    private ArrayList<Piece> pieces;
 
     //Default constructor
     public Board() {
@@ -41,12 +40,12 @@ public class Board {
     private Piece getPiece() {
         return piece;
     }
-    public ArrayList<Piece> getLivePieces() {
+    /*public ArrayList<Piece> getLivePieces() {
         return livePieces;
     }
     public ArrayList<Piece> getCapturedPieces() {
         return capturedPieces;
-    }
+    }*/
 
     //Setters
     public void setSquares(ArrayList<Square> squares) {
@@ -68,16 +67,16 @@ public class Board {
     //public Boolean isCheck(Color color) {}
     public void displayBoard() {
         System.out.println("  A  B  C  D  E  F  G  H");
-        for (int r = NUMROWS-1; r > 0; r--) {
-            System.out.print(r + " ");
-            for (int f = 1; f < NUMCOLUMNS; f++) {
-                Square square = squares[r][f];
+        for (int c = NUMROWS-1; c > 0; c--) {
+            System.out.print(c + " "); //Prints row numbers on left
+            for (int r = 1; r < NUMCOLUMNS; r++) {
+                Square square = squares[c][r];
                 if (square.getPiece() != null)
                     System.out.print("PH ");  //Display piece if there is one (currently displaying placeholder text)
-                else if ((r + f) % 2 == 0)
-                    System.out.print("## ");
+                else if ((c + r) % 2 == 0)
+                    System.out.print("## "); //## for black spaces
                 else
-                    System.out.print("   ");
+                    System.out.print("   "); //Blank for white
             }
             System.out.println();
         }
