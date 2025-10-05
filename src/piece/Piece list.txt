@@ -15,5 +15,3 @@ Black
 29/30 rooks, left first
 31 queen
 32 king
-
-Though on further reflection I don't think this is necessary at all, so probably skip it
