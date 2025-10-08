@@ -1,12 +1,12 @@
-package piece;
+package pieces;
 
 import board.Square;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Queen extends Piece {
+public class Bishop extends Piece {
 
-    public Queen(Color color, Square square) {
+    public Bishop(boolean color, Square square) {
         super(color, square);
     }
 
@@ -20,13 +20,9 @@ public class Queen extends Piece {
         List<Square> moves = new ArrayList<>();
         int row = getSquare().getRow();
         int col = getSquare().getColumn();
-        Color myColor = getColor();
+        boolean myColor = getColor();
 
         int[][] directions = {
-                { 1, 0},    // up
-                {-1, 0},    // down
-                { 0,-1},    // left
-                { 0, 1},    // right
                 { 1, 1},    // up right
                 { 1,-1},    // up left
                 {-1, 1},    // down right
@@ -42,13 +38,10 @@ public class Queen extends Piece {
                 Square target = board[newRow][newCol];      // pull target square from board
                 Piece occupant = target.getPiece();         // check if piece exists
 
-                if (occupant == null) {     //if empty add to moves
+                if (occupant == null || occupant.getColor() != myColor) {     //if empty or occupied by enemy piece, add to moves
                     moves.add(target);
                 }
                 else {
-                    if (occupant.getColor() != myColor) {   // if occupied and opposite color add to moves
-                        moves.add(target);                  // capture
-                    }
                     break;                                  // end sliding if ever encounter another piece
                 }
 

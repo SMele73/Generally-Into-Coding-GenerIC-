@@ -1,19 +1,21 @@
-package piece;
+package pieces;
 
 import board.Square;
 import java.util.List;
 
 public abstract class Piece {
-    public enum Color { WHITE, BLACK }
 
-    private final Color color;
+    private final boolean color;    //White = true, black = false
     private Square square;
 
-    public Piece(Color color, Square square) {
+    public Piece(boolean color) {
+        this.color = color;
+    }
+    public Piece(boolean color, Square square) {
         this.color = color;
         this.square = square;
     }
-    public Color getColor() { return color; }
+    public boolean getColor() { return color; }
     public Square getSquare() { return square; }
     public void setSquare(Square square) { this.square = square; }
 

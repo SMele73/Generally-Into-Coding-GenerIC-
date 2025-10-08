@@ -1,6 +1,6 @@
 package board;
 
-import piece.Piece;
+import pieces.Piece;
 
 public class Square {
     //Private attributes
@@ -45,9 +45,7 @@ public class Square {
     }
 
     //Getters
-    public int getColumn() {
-        return col;
-    }
+    public int getColumn() {return col;}
     public int getRow() {
         return row;
     }
@@ -62,5 +60,14 @@ public class Square {
     public void setRow(int r) {
         row = r;
     }
+    public void setPiece(Piece p) {
+        piece = p;
+    }
     //Todo: Setter for piece goes here. Exact wording depends on piece attributes
+
+    //Override .equals() for use in move lists
+
+    public boolean same(Square s){
+        return (this.row == s.getRow() && this.col == s.getColumn());
+    }
 }

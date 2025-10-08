@@ -1,4 +1,4 @@
-package piece;
+package pieces;
 
 import board.Square;
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Pawn extends Piece {
 
-    public Pawn(Color color, Square square) {
+    public Pawn(boolean color, Square square) {
         super(color, square);
     }
     private boolean moved = false;
@@ -24,8 +24,8 @@ public class Pawn extends Piece {
         List<Square> moves = new ArrayList<>();
         int currentRow = getSquare().getRow();
         int currentCol = getSquare().getColumn();
-        int direction = (getColor() == Color.WHITE) ? 1 : -1;   // assign pawn direction
-        Color myColor = getColor();
+        int direction = (getColor()) ? 1 : -1;   // assign pawn direction
+        boolean myColor = getColor();
 
         int nextRow = currentRow + direction;
         int twoRow = currentRow + 2 * direction;

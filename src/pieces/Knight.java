@@ -1,4 +1,4 @@
-package piece;
+package pieces;
 
 import board.Square;
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Knight extends Piece {
 
-    public Knight(Color color, Square square) {
+    public Knight(boolean color, Square square) {
         super(color, square);
     }
 
@@ -20,7 +20,7 @@ public class Knight extends Piece {
         List<Square> moves = new ArrayList<>();
         int row = getSquare().getRow();
         int col = getSquare().getColumn();
-        Color myColor = getColor();
+        boolean myColor = getColor();
 
         // only 8 possible moves a knight can make
         int[][] moveOffsets = {

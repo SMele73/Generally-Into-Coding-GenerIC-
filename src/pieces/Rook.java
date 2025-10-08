@@ -1,4 +1,4 @@
-package piece;
+package pieces;
 
 import board.Square;
 import java.util.ArrayList;
@@ -6,7 +6,8 @@ import java.util.List;
 
 public class Rook extends Piece {
 
-    public Rook(Color color, Square square) {
+    public Rook(boolean color) {super(color);}
+    public Rook(boolean color, Square square) {
         super(color, square);
     }
 
@@ -25,7 +26,7 @@ public class Rook extends Piece {
         List<Square> moves = new ArrayList<>();
         int row = getSquare().getRow();
         int col = getSquare().getColumn();
-        Color myColor = getColor();
+        boolean myColor = getColor();
 
         int[][] directions = {
                 { 1, 0},      // up
@@ -43,13 +44,10 @@ public class Rook extends Piece {
                 Square target = board[newRow][newCol];      // pull target square from board
                 Piece occupant = target.getPiece();         // check if piece exists
 
-                if (occupant == null) {     //if empty add to moves
+                if (occupant == null || occupant.getColor() != myColor) {     //if empty or occupied by enemy piece, add to moves
                     moves.add(target);
                 }
                 else {
-                    if (occupant.getColor() != myColor) {   // if occupied and opposite color add to moves
-                        moves.add(target);                  // capture
-                    }
                     break;                                  // end sliding if ever encounter another piece
                 }
 
