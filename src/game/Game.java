@@ -12,6 +12,7 @@ public class Game {
     private Player black = new Player(false);
     private boolean currentPlayer = true;
     private String move;
+    public boolean checkMate = false;
 
 
     //Default constructor
@@ -36,13 +37,15 @@ public class Game {
 
     public void play() {
         //Todo: Check for checkmate logic
-        boolean legal = false;
-        while (!legal) {
-            requestMove(); //Get move from player, initial validation
-            legal = sendMove(); //Attempt to perform move
+        while(!checkMate){
+            boolean legal = false;
+            while (!legal) {
+                requestMove(); //Get move from player, initial validation
+                legal = sendMove(); //Attempt to perform move
+            }
+            currentPlayer = !currentPlayer; //Switch players
+            board.displayBoard();           //Show new board state
         }
-        currentPlayer = !currentPlayer; //Switch players
-        board.displayBoard();           //Show new board state
     }
 
     public void requestMove() {
@@ -58,8 +61,8 @@ public class Game {
 
     public boolean sendMove() {
         //Parse received move into square objects
-        Square from = new Square(colLetterToCol(Character.toUpperCase(move.charAt(0))),Character.getNumericValue(move.charAt(1)));
-        Square to = new Square(colLetterToCol(Character.toUpperCase(move.charAt(3))),Character.getNumericValue(move.charAt(4)));
+        Square from = new Square(Character.getNumericValue(move.charAt(1)),colLetterToCol(Character.toUpperCase(move.charAt(0))));
+        Square to = new Square(Character.getNumericValue(move.charAt(4)),colLetterToCol(Character.toUpperCase(move.charAt(3))));
         //Send move to board for further processing
         return board.movePiece(from, to, currentPlayer);
     }

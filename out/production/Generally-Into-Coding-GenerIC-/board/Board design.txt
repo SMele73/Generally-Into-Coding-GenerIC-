@@ -1,6 +1,6 @@
 Board design
 rank – horizontal row 1-8, 1 is white
-file – vertical row a-h, a is white's queenside pawn
+file – vertical column a-h, a is white's queenside pawn
 queen on own color
 move notation is letter (file), number (rank)
 

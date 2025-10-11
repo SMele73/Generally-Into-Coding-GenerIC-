@@ -133,13 +133,15 @@ public class Board {
         squares[1][5].setPiece(new King(true, squares[1][5]));
         squares[1][6].setPiece(new Knight(true, squares[1][6]));
         squares[1][7].setPiece(new Bishop(true, squares[1][7]));
-        squares[1][8].setPiece(new Rook(true, squares[1][2]));
+        squares[1][8].setPiece(new Rook(true, squares[1][8]));
         for (int c = 1; c < Constants.NUM_COLS; c++) {
             squares[2][c].setPiece(new Pawn(true, squares[2][c]));
         }
     }
 
     public boolean validMove(Square from, Square to, boolean color) {
+        from = squares[from.getRow()][from.getColumn()];
+        piece = from.getPiece();
         //Move validation
         try {
             //Are the entered squares on the board?
@@ -148,7 +150,7 @@ public class Board {
                     to.getRow() < 1 || to.getRow() > Constants.NUM_ROWS || to.getColumn() < 1 || to.getColumn() > Constants.NUM_COLS) {
                 throw new IllegalArgumentException("Invalid square(s)");
             }
-            if(from.getPiece() == null) { //Does start square have a piece?
+            if(piece == null) { //Does start square have a piece?
                 throw new IllegalArgumentException("No piece in that square!");
             }
             if(from.getPiece().getColor() != color) { //Is that piece the current player's color?

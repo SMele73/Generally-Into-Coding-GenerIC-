@@ -11,7 +11,7 @@ public class Square {
     private Piece piece;
 
     //Default constructor
-    public Square(int c, int r) {
+    public Square(int r, int c) {
         piece = null;
         col = c;
         row = r;
