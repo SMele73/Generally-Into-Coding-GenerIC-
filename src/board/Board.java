@@ -57,9 +57,9 @@ public class Board {
         Square dest = squares[to.getRow()][to.getColumn()];
         piece = orig.getPiece();
 
-        //Prepare a rollback square for a move invalidated by checks
-        Square rollback = squares[from.getRow()][from.getColumn()];
-        rollback.setPiece(piece);
+        //Prepare squares for a move invalidated by checks
+        Square rollbackFrom = squares[from.getRow()][from.getColumn()];
+        Square rollbackTo = squares[to.getRow()][to.getColumn()];
 
         //Validate move
         if (!validMove(orig, dest, color)) {
@@ -68,12 +68,20 @@ public class Board {
 
         //Perform move
         dest.setPiece(piece);
-        piece.setSquare(to); //Alternatively, set it to 'to' if circular logic problems arise
+        piece.setSquare(to); //Originally was set to dest rather than two. This should help avoid circular logic problems
         orig.setPiece(null);
 
         //Check if self is now in check. If checkChecks find self in check, rollback the move
         if (isCheck(color)){
             System.out.println("Illegal move, you leave yourself in check");
+            //Rollback end square
+            piece = rollbackTo.getPiece();
+            piece.setSquare(to);
+            squares[to.getRow()][to.getColumn()] = rollbackTo;
+            //Rollback start square
+            piece = rollbackFrom.getPiece();
+            piece.setSquare(from);
+            squares[from.getRow()][from.getColumn()] = rollbackFrom;
             return false;
         }
 
@@ -123,12 +131,12 @@ public class Board {
 
     public void placeBlack() {
         squares[8][1].setPiece(new Rook(false, squares[8][1]));
-        squares[8][2].setPiece(new Bishop(false, squares[8][2]));
-        squares[8][3].setPiece(new Knight(false, squares[8][3]));
+        squares[8][2].setPiece(new Knight(false, squares[8][2]));
+        squares[8][3].setPiece(new Bishop(false, squares[8][3]));
         squares[8][4].setPiece(new Queen(false, squares[8][4]));
         squares[8][5].setPiece(new King(false, squares[8][5]));
-        squares[8][6].setPiece(new Knight(false, squares[8][6]));
-        squares[8][7].setPiece(new Bishop(false, squares[8][7]));
+        squares[8][6].setPiece(new Bishop(false, squares[8][6]));
+        squares[8][7].setPiece(new Knight(false, squares[8][7]));
         squares[8][8].setPiece(new Rook(false, squares[8][8]));
         for (int c = 1; c < Constants.NUM_COLS; c++) {
             squares[7][c].setPiece(new Pawn(false, squares[7][c]));
@@ -137,12 +145,12 @@ public class Board {
 
     public void placeWhite() {
         squares[1][1].setPiece(new Rook(true, squares[1][1]));
-        squares[1][2].setPiece(new Bishop(true, squares[1][2]));
-        squares[1][3].setPiece(new Knight(true, squares[1][3]));
+        squares[1][2].setPiece(new Knight(true, squares[1][2]));
+        squares[1][3].setPiece(new Bishop(true, squares[1][3]));
         squares[1][4].setPiece(new Queen(true, squares[1][4]));
         squares[1][5].setPiece(new King(true, squares[1][5]));
-        squares[1][6].setPiece(new Knight(true, squares[1][6]));
-        squares[1][7].setPiece(new Bishop(true, squares[1][7]));
+        squares[1][6].setPiece(new Bishop(true, squares[1][6]));
+        squares[1][7].setPiece(new Knight(true, squares[1][7]));
         squares[1][8].setPiece(new Rook(true, squares[1][8]));
         for (int c = 1; c < Constants.NUM_COLS; c++) {
             squares[2][c].setPiece(new Pawn(true, squares[2][c]));

@@ -51,8 +51,8 @@ public class Rook extends Piece {
                     moves.add(target);
                     break;
                 }
-                else{
-                    break;
+                else {
+                    break;                                  // end sliding if ever encounter another piece
                 }
 
                 newRow += dir[0];

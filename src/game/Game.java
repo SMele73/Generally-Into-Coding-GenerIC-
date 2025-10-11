@@ -44,6 +44,10 @@ public class Game {
                 legal = sendMove(); //Attempt to perform move
             }
             currentPlayer = !currentPlayer; //Switch players
+            //Check if new current player is checkmated
+            if(board.isCheck(currentPlayer)){
+
+            }
             board.displayBoard();           //Show new board state
         }
     }

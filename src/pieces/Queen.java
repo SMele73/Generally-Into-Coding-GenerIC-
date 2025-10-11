@@ -42,10 +42,10 @@ public class Queen extends Piece {
                 Square target = board[newRow][newCol];      // pull target square from board
                 Piece occupant = target.getPiece();         // check if piece exists
 
-                if (occupant == null) {     //if empty or occupied by enemy piece, add to moves
+                if (occupant == null) {     //if empty add to moves
                     moves.add(target);
                 }
-                else if(occupant.getColor() != myColor){
+                else if(occupant.getColor() != myColor){ //if occupied by enemy piece, add to moves and stop sliding
                     moves.add(target);
                     break;
                 }

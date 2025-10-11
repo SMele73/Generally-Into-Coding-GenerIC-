@@ -46,7 +46,7 @@ public class Bishop extends Piece {
                     break;
                 }
                 else{
-                    break;
+                    break;                  // end sliding if ever encounter another piece
                 }
 
                 newRow += dir[0];
