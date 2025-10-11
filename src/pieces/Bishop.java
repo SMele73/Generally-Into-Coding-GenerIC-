@@ -45,6 +45,9 @@ public class Bishop extends Piece {
                     moves.add(target);
                     break;
                 }
+                else{
+                    break;
+                }
 
                 newRow += dir[0];
                 newCol += dir[1];
