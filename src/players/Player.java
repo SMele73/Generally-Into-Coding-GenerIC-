@@ -36,6 +36,7 @@ public class Player {
                 else {
                     char let1 = Character.toUpperCase(move.charAt(0));
                     char let2 = Character.toUpperCase(move.charAt(3));
+                    //H is magic letter in this case, setting up a comparison to NUM_COLS is an optional enhancement
                     if (let1 < 'A' || let1 > 'H' || let2 < 'A' || let2 > 'H') {
                         throw new IllegalArgumentException("File is not on the board");
                     }
