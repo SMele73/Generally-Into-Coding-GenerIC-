@@ -51,13 +51,23 @@ public class Game {
     public void requestMove() {
         if (currentPlayer) { //If white's turn
             System.out.println("Current turn: White.");
+            //Check if self is in check, warn self if checkChecks tick the check checkbox
+            if(board.isCheck(white.getColor())){
+                System.out.println("You are in check!");
+            }
             move = white.makeMove();
         }
         else { //!playerTurn //Black's turn
             System.out.println("Current turn: Black.");
+            //Check if self is in check, warn self if checkChecks tick the check checkbox
+            if(board.isCheck(black.getColor())){
+                System.out.println("You are in check!");
+            }
             move = black.makeMove();
         }
     }
+
+    //If enemy is in check, check if it's a checkmate
 
     public boolean sendMove() {
         //Parse received move into square objects

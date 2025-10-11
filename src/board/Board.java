@@ -3,25 +3,26 @@ package board;
 import pieces.*;
 import utility.Constants;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Board {
-    /**Private attributes*/
-    //This wastes 17/81 of the array but the game is not exactly big enough to suffer from lack of optimization
-    //and it will be much easier to work with
-    //final int Constants.NUM_COLS = 9;
-    //final int Constants.NUM_ROWS = 9;
+    /**
+     * Private attributes
+     */
+
 
     //Declare board's squares
     private final Square[][] squares = new Square[Constants.NUM_ROWS][Constants.NUM_COLS];
 
     private Piece piece;
     //private Array pieceStatus -- Single Boolean array for capture instead of 2 array lists?
-    private ArrayList<Piece> pieces;
+    //Currently no need for an array at all
+    //private ArrayList<Piece> pieces;
 
     //Default constructor
     public Board() {
         //Initialize squares
-        for (int r = Constants.NUM_ROWS-1; r > 0; r--) {
+        for (int r = Constants.NUM_ROWS - 1; r > 0; r--) {
             for (int c = 1; c < Constants.NUM_COLS; c++) {
                 squares[r][c] = new Square(r, c);
             }
@@ -34,6 +35,7 @@ public class Board {
     public Square[][] getSquares() {
         return squares;
     }
+
     private Piece getPiece() {
         return piece;
     }
@@ -50,56 +52,64 @@ public class Board {
 
     //Methods
     public boolean movePiece(Square from, Square to, boolean color) {
-        //Todo: Flag for valid move should be handled by game.play() method so a new move can be input
         //Load corresponding squares on the board
         Square orig = squares[from.getRow()][from.getColumn()];
         Square dest = squares[to.getRow()][to.getColumn()];
         piece = orig.getPiece();
+
+        //Prepare a rollback square for a move invalidated by checks
+        Square rollback = squares[from.getRow()][from.getColumn()];
+        rollback.setPiece(piece);
+
         //Validate move
         if (!validMove(orig, dest, color)) {
             return false;
         }
-        //Todo: Checking for check logic goes here or in validMove?
 
         //Perform move
         dest.setPiece(piece);
-        piece.setSquare(dest); //Alternatively, set it to 'to' if circular logic problems arise
+        piece.setSquare(to); //Alternatively, set it to 'to' if circular logic problems arise
         orig.setPiece(null);
+
+        //Check if self is now in check. If checkChecks find self in check, rollback the move
+        if (isCheck(color)){
+            System.out.println("Illegal move, you leave yourself in check");
+            return false;
+        }
+
         return true;
+
+
+
     }
+
     //public boolean isCheck(boolean color) {}
     //public boolean isCheckmate(boolean color) {}
     public void displayBoard() {
         System.out.println("  A  B  C  D  E  F  G  H");
-        for (int c = Constants.NUM_ROWS-1; c > 0; c--) {
+        for (int c = Constants.NUM_ROWS - 1; c > 0; c--) {
             System.out.print(c + " "); //Prints row numbers on left
             for (int r = 1; r < Constants.NUM_COLS; r++) {
                 Square square = squares[c][r];
-                if (square.getPiece() != null){ //Check for piece on space
+                if (square.getPiece() != null) { //Check for piece on space
                     piece = square.getPiece();
-                    if (piece.getColor()){      //If a piece is there, print letter for piece's color
+                    if (piece.getColor()) {      //If a piece is there, print letter for piece's color
                         System.out.print("w");
-                    }
-                    else { //(!piece.getColor()
+                    } else { //(!piece.getColor()
                         System.out.print("b");
                     }
                     //Then print a letter corresponding to the type of piece
                     if (piece.getClass().equals(Pawn.class)) {
                         System.out.print("P ");
-                    }
-                    else if (piece.getClass().equals(Rook.class)) {
+                    } else if (piece.getClass().equals(Rook.class)) {
                         System.out.print("R ");
-                    }
-                    else if (piece.getClass().equals(Queen.class)) {
+                    } else if (piece.getClass().equals(Queen.class)) {
                         System.out.print("Q ");
-                    }
-                    else if (piece.getClass().equals(King.class)) {
+                    } else if (piece.getClass().equals(King.class)) {
                         System.out.print("K ");
-                    }
-                    else if (piece.getClass().equals(Bishop.class)) {
+                    } else if (piece.getClass().equals(Bishop.class)) {
                         System.out.print("B ");
-                    }
-                    else{ // (piece.getClass().equals(Knight.class))
+                    } else { // (piece.getClass().equals(Knight.class))
                         System.out.print("N ");
                     }
                 } else if ((c + r) % 2 == 0)
@@ -146,17 +156,17 @@ public class Board {
         try {
             //Are the entered squares on the board?
             //Todo: Deletion candidate, board boundaries are checked during initial move validation
-            if(from.getRow() < 1 || from.getRow() > Constants.NUM_ROWS || from.getColumn() < 1 || from.getColumn() > Constants.NUM_COLS ||
+            if (from.getRow() < 1 || from.getRow() > Constants.NUM_ROWS || from.getColumn() < 1 || from.getColumn() > Constants.NUM_COLS ||
                     to.getRow() < 1 || to.getRow() > Constants.NUM_ROWS || to.getColumn() < 1 || to.getColumn() > Constants.NUM_COLS) {
                 throw new IllegalArgumentException("Invalid square(s)");
             }
-            if(piece == null) { //Does start square have a piece?
+            if (piece == null) { //Does start square have a piece?
                 throw new IllegalArgumentException("No piece in that square!");
             }
-            if(from.getPiece().getColor() != color) { //Is that piece the current player's color?
+            if (from.getPiece().getColor() != color) { //Is that piece the current player's color?
                 throw new IllegalArgumentException("That piece is not your color.");
             }
-            if(!piece.possibleMoves(squares).contains(to)) { //Is this a legal move for that piece?
+            if (!piece.possibleMoves(squares).contains(to)) { //Is this a legal move for that piece?
                 throw new IllegalArgumentException("That move is not legal!");
             }
             return true;
@@ -167,5 +177,51 @@ public class Board {
             System.out.println(e.getMessage());
             return false;
         }
+    }
+
+    public boolean isCheck(boolean targetKingColor) {
+        //Find king to check for check
+        Square kingLoc = kingSearch(targetKingColor);
+        //Check board for checks
+        for (int r = Constants.NUM_ROWS - 1; r > 0; r--) {
+            //Is checked king in check?
+            for (int c = 1; c < Constants.NUM_COLS; c++) {
+                if (checkCheck(squares[r][c], kingLoc)) {return true;}
+            }
+        }
+        //If checkChecks show no check, check off that there is no check
+        return false;
+    }
+
+    //Helper methods
+    //Locate and return the square containing the king of a particular color
+    public Square kingSearch ( boolean color){
+        for (int r = Constants.NUM_ROWS - 1; r > 0; r--) {
+            for (int c = 1; c < Constants.NUM_COLS; c++) {
+                if (squares[r][c].getPiece() != null) {
+                    if (squares[r][c].getPiece().getClass().equals(King.class) && squares[r][c].getPiece().getColor() == color) {
+                        return squares[r][c];
+                    }
+                }
+            }
+        }
+        //This should never be reached. Optional enhancement is to set up a proper exception throw
+        System.out.println("Fatal error 404, king not found.");
+        return squares[0][0];
+    }
+    //Determine if that square contains a piece that could capture the enemy king
+    public boolean checkCheck(Square s, Square k) {
+        //Is there a piece on this square?
+        //Todo: Optional enhancement: Don't check move list if currently examined piece is king's color
+        if (s.getPiece() != null) {
+            //Get each possible move of the current piece
+            List<Square> current = s.getPiece().possibleMoves(squares);
+            //Check if the king's location is a possible move for the current piece
+            for (Square curr : current) {
+                if (curr.same(k)) {return true;}
+            }
+        }
+        //If no piece or can't reach king, return false
+        return false;
     }
 }
