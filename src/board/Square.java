@@ -11,9 +11,9 @@ public class Square {
     private Piece piece;
 
     //Default constructor
-    public Square(int f, int r) {
+    public Square(int c, int r) {
         piece = null;
-        col = f;
+        col = c;
         row = r;
         //Yes, there's a much more elegant way to do this. No, I'm not taking the time to implement it.
         switch(col) {
@@ -44,6 +44,40 @@ public class Square {
         }
     }
 
+    //Alternative constructor, when colLetter is known and col must be derived
+    /*public Square(Character c, int r) {
+        piece = null;
+        row = r;
+        switch(colLetter) {
+            case 'A':
+                col = 1;
+                break;
+            case 'B':
+                col = 2;
+                break;
+            case 'C':
+                col = 3;
+                break;
+            case 'D':
+                col = 4;
+                break;
+            case 'E':
+                col = 5;
+                break;
+            case 'F':
+                col = 6;
+                break;
+            case 'G':
+                col = 7;
+                break;
+            case 'H':
+                col = 8;
+                break;
+            default:
+                System.out.println("Something went wrong.");
+        }
+    }*/
+
     //Getters
     public int getColumn() {return col;}
     public int getRow() {
@@ -63,7 +97,7 @@ public class Square {
     public void setPiece(Piece p) {
         piece = p;
     }
-    //Todo: Setter for piece goes here. Exact wording depends on piece attributes
+
 
     //Override .equals() for use in move lists
 

@@ -8,9 +8,11 @@ public class Game {
 
     //Attributes
     private Board board;
-    public Player white = new Player(true);
-    public Player black = new Player(false);
-    public boolean currentPlayer = false;
+    private Player white = new Player(true);
+    private Player black = new Player(false);
+    private boolean currentPlayer = true;
+    private String move;
+
 
     //Default constructor
     public Game() {
@@ -21,11 +23,77 @@ public class Game {
         board.displayBoard();
     }
 
+    //Getters
+    public String getMove(){
+        return move;
+    }
+
+    //Setters
+    public void setMove(String move){
+        this.move = move;
+    }
     //public void end() {}
 
     public void play() {
-        requestMove();
+        //Todo: Check for checkmate logic
+        boolean legal = false;
+        while (!legal) {
+            requestMove(); //Get move from player, initial validation
+            legal = sendMove(); //Attempt to perform move
+        }
+        currentPlayer = !currentPlayer; //Switch players
+        board.displayBoard();           //Show new board state
     }
 
-    public void requestMove() {}
+    public void requestMove() {
+        if (currentPlayer) { //If white's turn
+            System.out.println("Current turn: White.");
+            move = white.makeMove();
+        }
+        else { //!playerTurn //Black's turn
+            System.out.println("Current turn: Black.");
+            move = black.makeMove();
+        }
+    }
+
+    public boolean sendMove() {
+        //Parse received move into square objects
+        Square from = new Square(colLetterToCol(Character.toUpperCase(move.charAt(0))),Character.getNumericValue(move.charAt(1)));
+        Square to = new Square(colLetterToCol(Character.toUpperCase(move.charAt(3))),Character.getNumericValue(move.charAt(4)));
+        //Send move to board for further processing
+        return board.movePiece(from, to, currentPlayer);
+    }
+
+    public int colLetterToCol(char c) {
+        int col = 0;
+        switch (c) {
+            case 'A':
+                col = 1;
+                break;
+            case 'B':
+                col = 2;
+                break;
+            case 'C':
+                col = 3;
+                break;
+            case 'D':
+                col = 4;
+                break;
+            case 'E':
+                col = 5;
+                break;
+            case 'F':
+                col = 6;
+                break;
+            case 'G':
+                col = 7;
+                break;
+            case 'H':
+                col = 8;
+                break;
+            default:
+                System.out.println("Something went wrong.");
+        }
+        return col;
+    }
 }

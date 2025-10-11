@@ -28,11 +28,6 @@ public class Board {
         }
         placeBlack();
         placeWhite();
-        //Todo: Shuffle some of this
-        //Initialize full livePieces;
-        //Initialize empty capturedPieces;
-        //Place pieces on board;
-        //Start white turn;
     }
 
     //Getters
@@ -148,6 +143,7 @@ public class Board {
         //Move validation
         try {
             //Are the entered squares on the board?
+            //Todo: Deletion candidate, board boundaries are checked during initial move validation
             if(from.getRow() < 1 || from.getRow() > Constants.NUM_ROWS || from.getColumn() < 1 || from.getColumn() > Constants.NUM_COLS ||
                     to.getRow() < 1 || to.getRow() > Constants.NUM_ROWS || to.getColumn() < 1 || to.getColumn() > Constants.NUM_COLS) {
                 throw new IllegalArgumentException("Invalid square(s)");

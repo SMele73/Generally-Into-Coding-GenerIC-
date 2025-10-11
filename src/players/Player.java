@@ -41,9 +41,11 @@ public class Player {
                     }
                 }
                 //Validate numbers
-                char num1 = move.charAt(1);
-                char num2 = move.charAt(4);
-                if (!isDigit(num1) || !isDigit(num2)) {throw new IllegalArgumentException("Square declarations must end with a digit");}
+                //char num1 = move.charAt(1);
+                //char num2 = move.charAt(4);
+                if (!isDigit(move.charAt(1)) || !isDigit(move.charAt(4))) {throw new IllegalArgumentException("Square declarations must end with a digit");}
+                int num1 = Character.getNumericValue(move.charAt(1));
+                int num2 = Character.getNumericValue(move.charAt(4));
                 if (num1 < 1 || num1 > Constants.NUM_ROWS - 1 || num2 < 1 || num2 > Constants.NUM_ROWS - 1) {
                     throw new IllegalArgumentException("Rank is not on the board");
                 }
