@@ -6,6 +6,6 @@ public class Chess {
         Game game = new Game();
         game.start();
         game.play();
-        //game.end();
+        game.end();
     }
 }

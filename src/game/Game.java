@@ -3,6 +3,7 @@ package game;
 import board.Board;
 import players.*;
 import board.*;
+import java.util.Scanner;
 
 public class Game {
 
@@ -12,7 +13,7 @@ public class Game {
     private Player black = new Player(false);
     private boolean currentPlayer = true;
     private String move;
-    public boolean checkMate = false;
+    public boolean checkmate = false;
 
 
     //Default constructor
@@ -33,11 +34,10 @@ public class Game {
     public void setMove(String move){
         this.move = move;
     }
-    //public void end() {}
 
     public void play() {
         //Todo: Check for checkmate logic
-        while(!checkMate){
+        while(!checkmate){
             boolean legal = false;
             while (!legal) {
                 requestMove(); //Get move from player, initial validation
@@ -46,10 +46,27 @@ public class Game {
             currentPlayer = !currentPlayer; //Switch players
             //Check if new current player is checkmated
             if(board.isCheck(currentPlayer)){
-
+                checkmate = board.isCheckmate(currentPlayer);
+                if(checkmate){
+                    if (currentPlayer == true) {System.out.print("White ");}
+                    else /*currentPlayer == false*/ {System.out.print("Black ");}
+                    System.out.print("may be checkmated. Admit defeat? Y/N ");
+                    Scanner scan = new Scanner(System.in);
+                    Character surrender = scan.next().charAt(0);
+                    Character.toUpperCase(surrender);
+                    if (surrender != 'Y') {
+                        checkmate = false;}
+                }
             }
             board.displayBoard();           //Show new board state
         }
+    }
+
+    public void end() {
+        if(currentPlayer){
+            System.out.println("White has been checkmated! Game over, black wins!");
+        }
+        else System.out.println("Black has been checkmated! Game over, white wins!");
     }
 
     public void requestMove() {

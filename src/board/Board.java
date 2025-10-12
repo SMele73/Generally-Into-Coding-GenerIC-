@@ -59,7 +59,9 @@ public class Board {
 
         //Prepare squares for a move invalidated by checks
         Square rollbackFrom = squares[from.getRow()][from.getColumn()];
+        Piece backFrom = rollbackFrom.getPiece();
         Square rollbackTo = squares[to.getRow()][to.getColumn()];
+        Piece backTo = rollbackTo.getPiece();
 
         //Validate move
         if (!validMove(orig, dest, color)) {
@@ -79,20 +81,14 @@ public class Board {
             piece.setSquare(to);
             squares[to.getRow()][to.getColumn()] = rollbackTo;
             //Rollback start square
-            piece = rollbackFrom.getPiece();
+            piece = backFrom;
             piece.setSquare(from);
             squares[from.getRow()][from.getColumn()] = rollbackFrom;
             return false;
         }
-
         return true;
-
-
-
     }
 
-    //public boolean isCheck(boolean color) {}
-    //public boolean isCheckmate(boolean color) {}
     public void displayBoard() {
         System.out.println("  A  B  C  D  E  F  G  H");
         for (int c = Constants.NUM_ROWS - 1; c > 0; c--) {
@@ -178,7 +174,6 @@ public class Board {
                 throw new IllegalArgumentException("That move is not legal!");
             }
             return true;
-            //Todo: Check if the move will put the player's own king in check.
 
             //Color of a prospective capture is checked at the piece level and doesn't need to be rechecked here
         } catch (IllegalArgumentException e) {
@@ -199,6 +194,39 @@ public class Board {
         }
         //If checkChecks show no check, check off that there is no check
         return false;
+    }
+
+    public boolean isCheckmate(boolean color){
+        //Find king to check checkmate
+        Square kingLoc = kingSearch(color);
+        Square kingDest = new Square(0, 0);  //Part of cheap isCheckmate impl
+        Piece kingCap = null;       //Part of cheap isCheckmate impl
+
+        //Get possible moves of king in check
+        List<Square> kingMoves = (kingLoc.getPiece().possibleMoves(squares));
+        for (Square kingMove: kingMoves) {
+            //Setup rollback for possible king destination
+            /*Square*/ kingDest = kingMove;
+            /*Piece*/ kingCap = kingDest.getPiece();
+
+            //If king is able to move to square without ending up in check,
+            //rollback the move and return false
+            if (movePiece(kingLoc, kingMove, color)){
+                squares[kingLoc.getRow()][kingLoc.getColumn()] = kingLoc;
+                squares[kingDest.getRow()][kingDest.getColumn()] = kingDest;
+                if (kingCap != null){
+                    kingCap.setSquare(kingDest);
+                }
+                return false;
+            }
+        }
+        //Revert final king checkmate check
+        squares[kingLoc.getRow()][kingLoc.getColumn()] = kingLoc;
+        squares[kingDest.getRow()][kingDest.getColumn()] = kingDest;
+        if (kingCap != null){
+            kingCap.setSquare(kingDest);
+        }
+        return true; //If king has no valid moves, return true
     }
 
     //Helper methods
