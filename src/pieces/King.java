@@ -1,6 +1,6 @@
 package pieces;
 
-import board.Square;
+import board.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,8 +55,22 @@ public class King extends Piece {
                 }
             }
         }
+        /*
+        actually don't want castling moves to be listed as possible moves to move e1 g1
+        only with special input
+        // castling logic
+        if (!hasMoved()) {
+            // kingside
+            if (canCastle(board, row, col, true)){
+                moves.add(board[row][col + 2]);
+            }
+            // queenside
+            if (canCastle(board, row, col, false)){
+                moves.add(board[row][col - 2]);
+            }
+            }*/
+
+
         return moves;
     }
-
-
 }
