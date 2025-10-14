@@ -79,7 +79,7 @@ public class Board {
             //white reaches 8 or black reaches 1
             int promotionRow = piece.getColor() ? 8 : 1;
             if(to.getRow() == promotionRow){
-                System.out.println("Promote pawn to (Q, R, B, N): ");
+                System.out.print("Promote pawn to (Q, R, B, N): ");
                 Scanner scan = new Scanner(System.in);
                 String choice = scan.nextLine().trim().toUpperCase();
 
@@ -99,7 +99,7 @@ public class Board {
                         break;
                 }
                 dest.setPiece(newPiece);
-                System.out.print((piece.getColor() ? "White" : "Black") +
+                System.out.println((piece.getColor() ? "White" : "Black") +
                         " pawn promoted to " + newPiece.getClass().getSimpleName() + "! Congratulations!");
             }
         }
