@@ -4,6 +4,7 @@ import pieces.*;
 import utility.Constants;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Board {
     /**
@@ -72,6 +73,36 @@ public class Board {
         dest.setPiece(piece);
         piece.setSquare(to); //Originally was set to dest rather than two. This should help avoid circular logic problems
         orig.setPiece(null);
+
+        // Pawn Promotion
+        if (piece instanceof Pawn){
+            //white reaches 8 or black reaches 1
+            int promotionRow = piece.getColor() ? 8 : 1;
+            if(to.getRow() == promotionRow){
+                System.out.println("Promote pawn to (Q, R, B, N): ");
+                Scanner scan = new Scanner(System.in);
+                String choice = scan.nextLine().trim().toUpperCase();
+
+                Piece newPiece;
+                switch (choice) {
+                    case "R":
+                        newPiece = new Rook(piece.getColor(), dest);
+                        break;
+                    case "B":
+                        newPiece = new Bishop(piece.getColor(), dest);
+                        break;
+                    case "N":
+                        newPiece = new Knight(piece.getColor(), dest);
+                        break;
+                    default:
+                        newPiece = new Queen(piece.getColor(), dest);
+                        break;
+                }
+                dest.setPiece(newPiece);
+                System.out.print((piece.getColor() ? "White" : "Black") +
+                        " pawn promoted to " + newPiece.getClass().getSimpleName() + "! Congratulations!");
+            }
+        }
 
         //Check if self is now in check. If checkChecks find self in check, rollback the move
         if (isCheck(color)){
