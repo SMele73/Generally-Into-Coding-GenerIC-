@@ -10,9 +10,7 @@ import java.util.List;
 
 public class King extends Piece {
 
-    public King(boolean color, Square square) {
-        super(color, square);
-    }
+    public King(boolean color, Square square) {super(color, square);}
 
     private boolean moved = false;
     public void markMoved() { moved = true; }

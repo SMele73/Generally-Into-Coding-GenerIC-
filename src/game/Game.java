@@ -3,6 +3,8 @@ package game;
 import board.Board;
 import players.*;
 import board.*;
+
+import java.util.Objects;
 import java.util.Scanner;
 
 /**
@@ -113,10 +115,36 @@ public class Game {
      */
     public boolean sendMove() {
         //Parse received move into square objects
-        Square from = new Square(Character.getNumericValue(move.charAt(1)),colLetterToCol(Character.toUpperCase(move.charAt(0))));
-        Square to = new Square(Character.getNumericValue(move.charAt(4)),colLetterToCol(Character.toUpperCase(move.charAt(3))));
-        //Send move to board for further processing
-        return board.movePiece(from, to, currentPlayer);
+        //Check if move is a castle attempt. If yes, check if castling is legal.
+        //If yes, castle and end the move.
+        if (Objects.equals(move, "O-O") || Objects.equals(move, "o-o")) {//Kingside castle attempt
+            return board.performCastling(currentPlayer, true);
+            //Alternate logic if the original method bugs out
+            /*if (board.canCastle(currentPlayer, true)) {
+                board.performCastling(currentPlayer, true);
+                return true;
+            }
+            else { //Illegal castle attempt
+                return false;
+            }*/
+        }
+        else if (Objects.equals(move, "O-O-O") || Objects.equals(move, "o-o-o")) {//Queenside castle attempt
+            return board.performCastling(currentPlayer, false);
+            /*if (board.canCastle(currentPlayer, false)) {
+                board.performCastling(currentPlayer, false);
+                return true;
+            }
+            else { //Illegal castle attempt
+                return false;
+            }*/
+
+        }
+        else { //Not a castling attempt
+            Square from = new Square(Character.getNumericValue(move.charAt(1)), colLetterToCol(Character.toUpperCase(move.charAt(0))));
+            Square to = new Square(Character.getNumericValue(move.charAt(4)), colLetterToCol(Character.toUpperCase(move.charAt(3))));
+            //Send move to board for further processing
+            return board.movePiece(from, to, currentPlayer);
+        }
     }
 
     /**

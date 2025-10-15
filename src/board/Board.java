@@ -355,7 +355,7 @@ public class Board {
     }
 
     // Check if castling is an option.
-    private boolean canCastle(boolean color, boolean kingside) {
+    public boolean canCastle(boolean color, boolean kingside) {
         int row = color ? 1 : 8;            // white = 1, black = 8
         int kingCol = 5;                    // kings always in col 5
         int direction = kingside ? 1 : -1;  // kingside 1, queenside -1
