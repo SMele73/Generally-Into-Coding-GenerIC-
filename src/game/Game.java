@@ -5,6 +5,11 @@ import players.*;
 import board.*;
 import java.util.Scanner;
 
+/**
+ * The Game consists of two players and the Board they play on.
+ * It handles the players, processes their moves for Board to use,
+ * and determines the winner
+ */
 public class Game {
 
     //Attributes
@@ -35,8 +40,13 @@ public class Game {
         this.move = move;
     }
 
+    /**
+     * Core method of Game. Each turn, asks the current player for their
+     * move and attempts to execute it. Invalid or illegal moves are
+     * discarded and another move requested. Once a move is successful,
+     * the updated board is printed to the console
+     */
     public void play() {
-        //Todo: Check for checkmate logic
         while(!checkmate){
             boolean legal = false;
             while (!legal) {
@@ -44,12 +54,12 @@ public class Game {
                 legal = sendMove(); //Attempt to perform move
             }
             currentPlayer = !currentPlayer; //Switch players
-            //Check if new current player is checkmated
+            /*//Check if new current player is checkmated
             if(board.isCheck(currentPlayer)){
                 checkmate = board.isCheckmate(currentPlayer);
                 if(checkmate){
                     if (currentPlayer == true) {System.out.print("White ");}
-                    else /*currentPlayer == false*/ {System.out.print("Black ");}
+                    else  {System.out.print("Black ");}
                     System.out.print("may be checkmated. Admit defeat? Y/N ");
                     Scanner scan = new Scanner(System.in);
                     Character surrender = scan.next().charAt(0);
@@ -57,11 +67,14 @@ public class Game {
                     if (surrender != 'Y') {
                         checkmate = false;}
                 }
-            }
+            }*/
             board.displayBoard();           //Show new board state
         }
     }
 
+    /**
+     * Ends the game, announcing the victor
+     */
     public void end() {
         if(currentPlayer){
             System.out.println("White has been checkmated! Game over, black wins!");
@@ -69,6 +82,11 @@ public class Game {
         else System.out.println("Black has been checkmated! Game over, white wins!");
     }
 
+    /**
+     * Asks the current player to input a move, warning them if they are
+     * currently in check.
+     * Actual input and initial validation of the move is handled by Player
+     */
     public void requestMove() {
         if (currentPlayer) { //If white's turn
             System.out.println("Current turn: White.");
@@ -88,8 +106,11 @@ public class Game {
         }
     }
 
-    //If enemy is in check, check if it's a checkmate
-
+    /**
+     * Splits the validated move string into squares and calls Board to
+     * confirm the move is legal and perform it
+     * @return Boolean value. True if move was successfully performed
+     */
     public boolean sendMove() {
         //Parse received move into square objects
         Square from = new Square(Character.getNumericValue(move.charAt(1)),colLetterToCol(Character.toUpperCase(move.charAt(0))));
@@ -98,6 +119,11 @@ public class Game {
         return board.movePiece(from, to, currentPlayer);
     }
 
+    /**
+     * Helper function, changes input file letter to an integer for processing
+     * @param c The given file
+     * @return Integer value, 1-8 inclusive
+     */
     public int colLetterToCol(char c) {
         int col = 0;
         switch (c) {

@@ -5,18 +5,24 @@ import utility.Constants;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Board is made up of a 2D array of squares.
+ * It handles initial game setup, piece movement, movement validation (not notation validation),
+ * and check(mate) checks.
+ */
 public class Board {
-    /**
-     * Private attributes
-     */
 
 
     //Declare board's squares
     private final Square[][] squares = new Square[Constants.NUM_ROWS][Constants.NUM_COLS];
 
+    /**
+     * The stored piece has no inherent function in the operation of the board, being used
+     * more as a convenient place to temporarily store a piece through different function calls.
+     */
     private Piece piece;
-    //private Array pieceStatus -- Single Boolean array for capture instead of 2 array lists?
     //Currently no need for an array at all
+    //private Array pieceStatus -- Single Boolean array for capture instead of 2 array lists?
     //private ArrayList<Piece> pieces;
 
     //Default constructor
@@ -46,11 +52,16 @@ public class Board {
         return capturedPieces;
     }*/
 
-    //Setters
-    public void setSquares(ArrayList<Square> squares) {
-    }
-
     //Methods
+
+    /**
+     * movePiece is the core of the program's logic. It receives and processes movement orders
+     * @param from The original square of the piece to move
+     * @param to The destination square of the piece to move
+     * @param color The color of the current player, used for move validation
+     * @return A boolean value returned to callers. True indicates a successful move,
+     * false one that has failed and either never happened or was rolled back
+     */
     public boolean movePiece(Square from, Square to, boolean color) {
         //Load corresponding squares on the board
         Square orig = squares[from.getRow()][from.getColumn()];
@@ -89,6 +100,9 @@ public class Board {
         return true;
     }
 
+    /**
+     * Prints the state of the board to the console after each move
+     */
     public void displayBoard() {
         System.out.println("  A  B  C  D  E  F  G  H");
         for (int c = Constants.NUM_ROWS - 1; c > 0; c--) {
@@ -125,6 +139,9 @@ public class Board {
         }
     }
 
+    /**
+     * Initializes black's pieces at game start
+     */
     public void placeBlack() {
         squares[8][1].setPiece(new Rook(false, squares[8][1]));
         squares[8][2].setPiece(new Knight(false, squares[8][2]));
@@ -139,6 +156,9 @@ public class Board {
         }
     }
 
+    /**
+     * Initializes white's pieces at game start
+     */
     public void placeWhite() {
         squares[1][1].setPiece(new Rook(true, squares[1][1]));
         squares[1][2].setPiece(new Knight(true, squares[1][2]));
@@ -153,17 +173,27 @@ public class Board {
         }
     }
 
+    /**
+     * Move validation logic. Specifically, this function confirms that the origin square has a piece
+     * of the current player's color and that the desired move is legal for that kind of piece.
+     * @param from The original square of the piece to move
+     * @param to The destination square of the piece to move
+     * @param color The color of the current player, used for move validation
+     * @return A boolean value returned to callers. Returns true for valid moves.
+     * Returns false and prints an explanation for invalid moves.
+     * @throws IllegalArgumentException for invalid moves.
+     */
     public boolean validMove(Square from, Square to, boolean color) {
         from = squares[from.getRow()][from.getColumn()];
         piece = from.getPiece();
         //Move validation
         try {
             //Are the entered squares on the board?
-            //Todo: Deletion candidate, board boundaries are checked during initial move validation
+            /*Todo: Deletion candidate, board boundaries are checked during initial move validation
             if (from.getRow() < 1 || from.getRow() > Constants.NUM_ROWS || from.getColumn() < 1 || from.getColumn() > Constants.NUM_COLS ||
                     to.getRow() < 1 || to.getRow() > Constants.NUM_ROWS || to.getColumn() < 1 || to.getColumn() > Constants.NUM_COLS) {
                 throw new IllegalArgumentException("Invalid square(s)");
-            }
+            }*/
             if (piece == null) { //Does start square have a piece?
                 throw new IllegalArgumentException("No piece in that square!");
             }
@@ -182,6 +212,11 @@ public class Board {
         }
     }
 
+    /**
+     * A brief check for if a particular king is in check.
+     * @param targetKingColor determines which king is being checked for check
+     * @return Boolean value, true if check check finds the king in check, false otherwise
+     */
     public boolean isCheck(boolean targetKingColor) {
         //Find king to check for check
         Square kingLoc = kingSearch(targetKingColor);
@@ -196,6 +231,16 @@ public class Board {
         return false;
     }
 
+    /**
+     * Function intended to check if king in check is also in checkmate.
+     * Checkmate check function not fully functional
+     * Intended function functionality is to check each possible piece for a side in check
+     * to see if any possible move results in a non-check state.
+     * Currently implemented only for the king, and breaks turn flow by having the king execute
+     * the first possible move to get out of check then asks his side for another move
+     * @param color The color of the king being checkmate checked
+     * @return Boolean value. True if check king is checkmated, false if normal check
+     */
     public boolean isCheckmate(boolean color){
         //Find king to check checkmate
         Square kingLoc = kingSearch(color);
@@ -231,6 +276,14 @@ public class Board {
 
     //Helper methods
     //Locate and return the square containing the king of a particular color
+
+    /**
+     * Helper function to find the square holding the king of a particular color
+     * @param color
+     * @return The square holding the desired king. If no king was found, prints an error
+     * message and returns an out-of-bounds square (which would break things if an AWOL king
+     * didn't already do that)
+     */
     public Square kingSearch ( boolean color){
         for (int r = Constants.NUM_ROWS - 1; r > 0; r--) {
             for (int c = 1; c < Constants.NUM_COLS; c++) {
@@ -246,6 +299,15 @@ public class Board {
         return squares[0][0];
     }
     //Determine if that square contains a piece that could capture the enemy king
+
+    /**
+     * Checks if the square holds a piece that can place an opposing king in check
+     * If there is a piece, checks the legal move list of that piece to see if any of them
+     * contain the location of the opposing king
+     * @param s The current square being checked
+     * @param k The current location of the opposing king
+     * @return Boolean value. If true, enemy king is currently in check from this square.
+     */
     public boolean checkCheck(Square s, Square k) {
         //Is there a piece on this square?
         //Todo: Optional enhancement: Don't check move list if currently examined piece is king's color

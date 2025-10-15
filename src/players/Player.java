@@ -6,6 +6,10 @@ import utility.Constants;
 import static java.lang.Character.isDigit;
 import static java.lang.Character.isLetter;
 
+/**
+ * Player handles the input of moves and confirms they are in proper chess notation
+ * before passing them on to Game for further use.
+ */
 public class Player {
     //Private attributes
     private boolean color;
@@ -20,7 +24,13 @@ public class Player {
         return this.color;
     }
     //Method
-    //Accept move from player, validate that it's in chess notation, send it off to Game
+
+    /**
+     * Primary Player function. Asks players for their move, confirms that it's valid chess
+     * notation, then sends it to Game.
+     * @return The string holding the validated move
+     * @throws IllegalArgumentException for moves that are off of the board
+     */
     public String makeMove() {
         Scanner scan = new Scanner(System.in);
         boolean valid = false;
