@@ -47,8 +47,6 @@ public class Pawn extends Piece {
             }
         }
 
-        // TODO check diagonals for capture
-        //  board[nextRow][currentCol-1], board[nextRow][currentCol+1] if in bounds
         int[] diagnolCol = {currentCol -1, currentCol +1};
         for (int diagCol : diagnolCol) {
             if (nextRow >= 1 && nextRow <= 8 && diagCol >= 1 && diagCol <= 8) {     //bound checking and diag

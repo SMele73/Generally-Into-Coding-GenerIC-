@@ -353,4 +353,75 @@ public class Board {
         //If no piece or can't reach king, return false
         return false;
     }
+
+    // Check if castling is an option.
+    private boolean canCastle(boolean color, boolean kingside) {
+        int row = color ? 1 : 8;            // white = 1, black = 8
+        int kingCol = 5;                    // kings always in col 5
+        int direction = kingside ? 1 : -1;  // kingside 1, queenside -1
+        int rookCol = kingside ? 8 : 1;     // kingside 8, queenside 1
+
+        // get king
+        Square kingSquare = squares[row][kingCol];
+        Piece king = kingSquare.getPiece();
+
+        // validate king
+        if (!(king instanceof King) || ((King) king).hasMoved()) {
+            return false;
+        }
+
+        // get rook
+        Square rookSquare = squares[row][rookCol];
+        Piece rook =  rookSquare.getPiece();
+
+        // validate rook
+        if (!(rook instanceof Rook) || ((Rook) rook).hasMoved()) {
+            return false;
+        }
+
+        // check for empty spaces between king and rook
+        // iterates along board in the indicated direction checking squares are empty
+        // returning false if anything occupies
+        for (int c = kingCol + direction; c != rookCol; c += direction) {
+            if (squares[row][c].getPiece() != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // actually perform the castle
+    public boolean performCastling(boolean color, boolean kingside) {
+        if (!canCastle(color, kingside)) {
+            System.out.println("Castling not allowed.");
+            return false;
+        }
+
+        // set coordinates for move
+        int row = color ? 1 : 8;            // white = 1, black = 8
+        int kingCol = 5;                    // kings always col 5
+        int rookCol = kingside ? 8 : 1;     // kingside 8, queenside 1
+        int kingTarget = kingside ? 7 : 3;  // kingside move king to 7, queenside to 3
+        int rookTarget = kingside ? 6 : 4;  // kingside rook to 6, queenside to 4
+
+        Square kingSquare = squares[row][kingCol];  // grab square where king should be
+        Square rookSquare = squares[row][rookCol];  // for later clearing
+        King king = (King) kingSquare.getPiece();   // cast grabbed piece to king or methods don't work
+        Rook rook = (Rook) rookSquare.getPiece();
+
+        // Perform move
+        squares[row][kingTarget].setPiece(king);    // move king to new spot
+        squares[row][rookTarget].setPiece(rook);
+        kingSquare.setPiece(null);                  // clear original spot
+        rookSquare.setPiece(null);
+
+        king.markMoved();                           // mark piece moved
+        rook.markMoved();
+
+        // output if successful by color and side
+        System.out.println((color ? "White" : "Black") +
+                (kingside ? " castles kingside" : " castles queenside"));
+        return true;
+    }
+
 }
