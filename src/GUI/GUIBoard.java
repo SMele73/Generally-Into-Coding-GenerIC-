@@ -2,22 +2,31 @@ package GUI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class GUIBoard extends JFrame {
+public class GUIBoard extends JFrame implements MouseListener {
 
-    public static void main(String[] args) {
-        JFrame game = makeBoard();
+    //Create square to be used with mouse listeners
+    //Set it outside of the board for validation
+    private Square square;
+    private boolean destinationPick = false;
+
+    public void main(String[] args) {
+        Square current = new Square(8,8);
+        makeBoard();
         boolean winner = false;
         while(!winner) {
-            play(game);
+            //play();
         }
     }
 
-    public static JFrame makeBoard() {
+    private Square[][] board = new Square[8][8];
+
+    public void makeBoard() {
         // Create the main frame for the chess board
-        JFrame frame = new JFrame("Chess Board");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLayout(new BorderLayout());
 
         // Create a JPanel that will hold the board
         JPanel boardPanel = new JPanel();
@@ -27,8 +36,8 @@ public class GUIBoard extends JFrame {
         // Create the chess board squares and pieces
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
-                // Create a new JLabel with a piece or an empty string
-                Square square = new Square(row, col);
+                // Create a new Square
+                Square square =  new Square(row, col);
                 //Place piece if appropriate
                 switch(row) {
                     case 0:
@@ -56,25 +65,65 @@ public class GUIBoard extends JFrame {
                         if(col == 4) {square.setText("Queen");}
                         break;
                 }
-
-                boardPanel.add(square);
+                //Assign square to button array and board container
+                board[row][col] = square;
+                board[row][col].addMouseListener(this);
+                boardPanel.add(board[row][col]);
             }
         }
 
 
-        frame.add(boardPanel);  // Add board panel to the frame
-        frame.pack();  // Pack the frame to fit the board
-        frame.setLocationRelativeTo(null);  // Center the frame
-        frame.setVisible(true);
-
-        return frame;
+        this.add(boardPanel);  // Add board panel to the frame
+        this.pack();  // Pack the frame to fit the board
+        this.setLocationRelativeTo(null);  // Center the frame
+        this.setVisible(true);
     }
 
-    public static JFrame play(JFrame game) {
 
-        int row = 0;
-        int col = 0;
+    /*
+    else { //If this is the second click of a move, overwrite the second square with the first
+            board[source.getRow()][source.getCol()].setText(square.getText());
+            //source.setPiece(square.getPiece());
+            square.setText("");
+            destinationPick = false;
+        }
+     */
 
-        return game;
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        Square source = (Square) e.getSource();
+        //If this is the first click of a move, assign clicked square to square
+        if(!destinationPick) {
+            square = source;
+            destinationPick = true;
+            System.out.println("Origin square: " + (source.getRow() + 1) + " " + (source.getCol() + 1));
+        }
+        else { //If this is the second click of a move, overwrite the second square with the first
+            source.setText(square.getText());
+            source.setForeground(square.getForeground());
+            square.setText("");
+            destinationPick = false;
+            System.out.println("Destination square: " + (source.getRow() + 1) + " " + (source.getCol() + 1));
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 }

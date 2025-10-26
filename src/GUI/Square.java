@@ -36,10 +36,8 @@ public class Square extends JButton {
     //Getters
     public int getCol() {return col;}
     public int getRow() {return row;}
-    public String getPiece() {return piece;}
 
     //Setters
     public void setColumn(int c) {col = c;}
     public void setRow(int r) {row = r;}
-    public void setPiece(String p) {piece = p;}
 }
