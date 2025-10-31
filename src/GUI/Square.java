@@ -40,4 +40,12 @@ public class Square extends JButton {
     //Setters
     public void setColumn(int c) {col = c;}
     public void setRow(int r) {row = r;}
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {return true;}
+        if (obj == null || this.getClass() != obj.getClass()) {return false;}
+        Square square = (Square) obj;
+        return this.col == square.getCol() && this.row == square.getRow();
+    }
 }

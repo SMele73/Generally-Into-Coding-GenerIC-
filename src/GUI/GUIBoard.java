@@ -9,8 +9,11 @@ public class GUIBoard extends JFrame implements MouseListener {
 
     //Create square to be used with mouse listeners
     //Set it outside of the board for validation
-    private Square square;
+    private Square squareClick;
+    private Square squareDrag;
     private boolean destinationPick = false;
+    private boolean leftSquare = false;
+    private Square newSquare;
 
     public void main(String[] args) {
         Square current = new Square(8,8);
@@ -79,51 +82,52 @@ public class GUIBoard extends JFrame implements MouseListener {
         this.setVisible(true);
     }
 
-
-    /*
-    else { //If this is the second click of a move, overwrite the second square with the first
-            board[source.getRow()][source.getCol()].setText(square.getText());
-            //source.setPiece(square.getPiece());
-            square.setText("");
-            destinationPick = false;
-        }
-     */
-
     @Override
     public void mouseClicked(MouseEvent e) {
         Square source = (Square) e.getSource();
-        //If this is the first click of a move, assign clicked square to square
-        if(!destinationPick) {
-            square = source;
-            destinationPick = true;
-            System.out.println("Origin square: " + (source.getRow() + 1) + " " + (source.getCol() + 1));
-        }
-        else { //If this is the second click of a move, overwrite the second square with the first
-            source.setText(square.getText());
-            source.setForeground(square.getForeground());
-            square.setText("");
-            destinationPick = false;
-            System.out.println("Destination square: " + (source.getRow() + 1) + " " + (source.getCol() + 1));
+        //If the cursor changed squares during the click, do nothing
+        if (!leftSquare) {
+            //If this is the first click of a move, assign clicked square to square
+            if(!destinationPick) {
+                squareClick = source;
+                destinationPick = true;
+                System.out.println("Click origin square: " + (source.getRow() + 1) + " " + (source.getCol() + 1));
+            }
+            else { //If this is the second click of a move, overwrite the second square with the first
+                source.setText(squareClick.getText());
+                source.setForeground(squareClick.getForeground());
+                squareClick.setText("");
+                destinationPick = false;
+                System.out.println("Click destination square: " + (source.getRow() + 1) + " " + (source.getCol() + 1));
+            }
         }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-
+        leftSquare = false;
+        squareDrag = (Square) e.getSource();
+        System.out.println("Origin square: " + (squareDrag.getRow() + 1) + " " + (squareDrag.getCol() + 1));
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        //If the mouse has left the original square since the button was clicked, treat it as a drag.
+        if (leftSquare) {
+            newSquare.setText(squareDrag.getText());
+            newSquare.setForeground(squareDrag.getForeground());
+            squareDrag.setText("");
+            System.out.println("Destination square: " + (newSquare.getRow() + 1) + " " + (newSquare.getCol() + 1));
+        }
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-
+        newSquare =  (Square) e.getSource();
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-
+        leftSquare = true;
     }
 }
