@@ -64,8 +64,8 @@ public class GUIBoard extends JFrame implements MouseListener {
                         if(col == 0 || col == 7) {square.setText("Rook");}
                         if(col == 1 || col == 6) {square.setText("Knight");}
                         if(col == 2 || col == 5) {square.setText("Bishop");}
-                        if(col == 3) {square.setText("King");}
-                        if(col == 4) {square.setText("Queen");}
+                        if(col == 3) {square.setText("Queen");}
+                        if(col == 4) {square.setText("King");}
                         break;
                 }
                 //Assign square to button array and board container
@@ -82,6 +82,7 @@ public class GUIBoard extends JFrame implements MouseListener {
         this.setVisible(true);
     }
 
+        //Todo: Re-implement clicks as actionPerformed
     @Override
     public void mouseClicked(MouseEvent e) {
         Square source = (Square) e.getSource();
