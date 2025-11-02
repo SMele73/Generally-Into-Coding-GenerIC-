@@ -16,8 +16,6 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
     private boolean destinationPick = false;
     private boolean leftSquare = false;
     private Square newSquare;
-    //appPanel is the main panel of the frame, each method adding new GUI elements should end by appending itself to appPanel
-    private JPanel appPanel = new JPanel(new BorderLayout());
 
     public void main(String[] args) {
         Square current = new Square(8,8);
@@ -47,28 +45,28 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
                 //Place piece if appropriate
                 switch(row) {
                     case 0:
-                        square.setForeground(Color.BLACK);
-                        if(col == 0 || col == 7) {square.setText("Rook");}
-                        if(col == 1 || col == 6) {square.setText("Knight");}
-                        if(col == 2 || col == 5) {square.setText("Bishop");}
-                        if(col == 3) {square.setText("Queen");}
-                        if(col == 4) {square.setText("King");}
+                        //square.setForeground(Color.BLACK); Line superceded by the unicode specifying color
+                        if(col == 0 || col == 7) {square.setText("\u265C");} //Black rooks
+                        if(col == 1 || col == 6) {square.setText("\u265E");} //Black knights
+                        if(col == 2 || col == 5) {square.setText("\u265D");} //Black bishops
+                        if(col == 3) {square.setText("\u265B");}             //Black queen
+                        if(col == 4) {square.setText("\u265A");}             //Black king
                         break;
                     case 1:
-                        square.setForeground(Color.BLACK);
-                        square.setText("Pawn");
+                        //square.setForeground(Color.BLACK); Line superceded by the unicode specifying color
+                        square.setText("\u265F");                            //Black pawns
                         break;
                     case 6:
-                        square.setForeground(Color.BLUE);
-                        square.setText("Pawn");
+                        //square.setForeground(Color.BLUE); Line superceded by the unicode specifying color
+                        square.setText("\u2659");                            //White pawns
                         break;
                     case 7:
-                        square.setForeground(Color.BLUE);
-                        if(col == 0 || col == 7) {square.setText("Rook");}
-                        if(col == 1 || col == 6) {square.setText("Knight");}
-                        if(col == 2 || col == 5) {square.setText("Bishop");}
-                        if(col == 3) {square.setText("Queen");}
-                        if(col == 4) {square.setText("King");}
+                        //square.setForeground(Color.BLUE); Line superceded by the unicode specifying color
+                        if(col == 0 || col == 7) {square.setText("\u2656");} //White rooks
+                        if(col == 1 || col == 6) {square.setText("\u2658");} //White knights
+                        if(col == 2 || col == 5) {square.setText("\u2657");} //White bishops
+                        if(col == 3) {square.setText("\u2655");}              //White queen
+                        if(col == 4) {square.setText("\u2654");}              //White king
                         break;
                 }
                 //Assign listeners to square, square to button array and board container
@@ -76,15 +74,18 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
                 board[row][col].addMouseListener(this);
                 board[row][col].addActionListener(this);
                 boardPanel.add(board[row][col]);
-                appPanel.add(boardPanel, BorderLayout.CENTER);
             }
         }
 
 
-        this.add(boardPanel);  // Add board panel to the frame
+        this.add(boardPanel, BorderLayout.CENTER);  // Add board panel to the frame
         this.pack();  // Pack the frame to fit the board
         this.setLocationRelativeTo(null);  // Center the frame
         this.setVisible(true);
+    }
+
+    public void makeDisplayOptions(){
+
     }
 
     /*Todo: Currently, these listener methods are for the main board only. Additional features may need to either
@@ -95,7 +96,6 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         //If the cursor changed squares during the click, do nothing
         if (!leftSquare) {
             //If this is the first click of a move, assign clicked square to square
-            System.out.println("LeftSquare was false");
             if(!destinationPick) {
                 squareClick = source;
                 destinationPick = true;
