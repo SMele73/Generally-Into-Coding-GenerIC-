@@ -2,10 +2,12 @@ package GUI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class GUIBoard extends JFrame implements MouseListener {
+public class GUIBoard extends JFrame implements MouseListener, ActionListener {
 
     //Create square to be used with mouse listeners
     //Set it outside of the board for validation
@@ -14,6 +16,8 @@ public class GUIBoard extends JFrame implements MouseListener {
     private boolean destinationPick = false;
     private boolean leftSquare = false;
     private Square newSquare;
+    //appPanel is the main panel of the frame, each method adding new GUI elements should end by appending itself to appPanel
+    private JPanel appPanel = new JPanel(new BorderLayout());
 
     public void main(String[] args) {
         Square current = new Square(8,8);
@@ -32,8 +36,7 @@ public class GUIBoard extends JFrame implements MouseListener {
         this.setLayout(new BorderLayout());
 
         // Create a JPanel that will hold the board
-        JPanel boardPanel = new JPanel();
-        boardPanel.setLayout(new GridLayout(8, 8));
+        JPanel boardPanel = new JPanel(new GridLayout(8,8));
         boardPanel.setPreferredSize(new Dimension(800, 800));
 
         // Create the chess board squares and pieces
@@ -68,10 +71,12 @@ public class GUIBoard extends JFrame implements MouseListener {
                         if(col == 4) {square.setText("King");}
                         break;
                 }
-                //Assign square to button array and board container
+                //Assign listeners to square, square to button array and board container
                 board[row][col] = square;
                 board[row][col].addMouseListener(this);
+                board[row][col].addActionListener(this);
                 boardPanel.add(board[row][col]);
+                appPanel.add(boardPanel, BorderLayout.CENTER);
             }
         }
 
@@ -82,13 +87,13 @@ public class GUIBoard extends JFrame implements MouseListener {
         this.setVisible(true);
     }
 
-        //Todo: Re-implement clicks as actionPerformed
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public void actionPerformed(ActionEvent e){
         Square source = (Square) e.getSource();
         //If the cursor changed squares during the click, do nothing
         if (!leftSquare) {
             //If this is the first click of a move, assign clicked square to square
+            System.out.println("LeftSquare was false");
             if(!destinationPick) {
                 squareClick = source;
                 destinationPick = true;
@@ -102,6 +107,11 @@ public class GUIBoard extends JFrame implements MouseListener {
                 System.out.println("Click destination square: " + (source.getRow() + 1) + " " + (source.getCol() + 1));
             }
         }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        //This does nothing, mouse clicks being handled more consistently by the actionPerformed method
     }
 
     @Override
