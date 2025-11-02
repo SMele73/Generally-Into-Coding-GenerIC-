@@ -87,6 +87,8 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         this.setVisible(true);
     }
 
+    /*Todo: Currently, these listener methods are for the main board only. Additional features may need to either
+    override these events again in their method or be split into separate classes, depending on what kind of conflicts arise*/
     @Override
     public void actionPerformed(ActionEvent e){
         Square source = (Square) e.getSource();
