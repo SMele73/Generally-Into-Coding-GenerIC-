@@ -17,6 +17,7 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
     private boolean leftSquare = false;
     private Square newSquare;
 
+
     public void main(String[] args) {
         Square current = new Square(8,8);
         makeBoard();
@@ -33,9 +34,12 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
 
+
         // Create a JPanel that will hold the board
         JPanel boardPanel = new JPanel(new GridLayout(8,8));
         boardPanel.setPreferredSize(new Dimension(800, 800));
+
+
 
         // Create the chess board squares and pieces
         for (int row = 0; row < 8; row++) {
@@ -76,8 +80,50 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
                 boardPanel.add(board[row][col]);
             }
         }
+        // special color for border background
+        Color borderColor = new Color(120, 85, 60);
 
+        // Adding Border panels for the aplha and num guides
+        // Needs a blank corner panel to offset for centered alphas
+        JPanel cornerPanel = new JPanel(new GridLayout(1,1));
+        cornerPanel.setPreferredSize(new Dimension(25, 25));
+        cornerPanel.setBackground(borderColor);
+        // cornerPanel.add(new JLabel(""));             if we wanted anything in the corner panel
 
+        // Create a JPanel that will hold row identifiers
+        JPanel rowPanel = new JPanel(new GridLayout(8,1));
+        rowPanel.setPreferredSize(new Dimension(25, 800));
+        rowPanel.setBackground(borderColor);
+
+        // iterate through to label row
+        for (int i = 8; i >=1 ; i--) {
+            JLabel row = new JLabel(String.valueOf(i), SwingConstants.CENTER);
+            row.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
+            row.setForeground(Color.white);
+            rowPanel.add(row);
+        }
+
+        // Create a JPanel that will hold column identifiers
+        JPanel colPanel = new JPanel(new GridLayout(1,8));
+        colPanel.setPreferredSize(new Dimension(800, 25));
+        colPanel.setBackground(borderColor);
+
+        // iterate through to label col
+        for (char c = 'A'; c <= 'H'; c++) {
+            JLabel col = new JLabel(String.valueOf(c), SwingConstants.CENTER);
+            col.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
+            col.setForeground(Color.white);
+            colPanel.add(col);
+        }
+
+        // now a separate panel to hold the spacer corner and column identifiers
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(cornerPanel, BorderLayout.WEST);
+        topPanel.add(colPanel, BorderLayout.CENTER);
+
+        // add the panels to the board
+        this.add(topPanel, BorderLayout.NORTH);     // space corner and column aplha
+        this.add(rowPanel, BorderLayout.WEST);      // row numeric
         this.add(boardPanel, BorderLayout.CENTER);  // Add board panel to the frame
         this.pack();  // Pack the frame to fit the board
         this.setLocationRelativeTo(null);  // Center the frame
