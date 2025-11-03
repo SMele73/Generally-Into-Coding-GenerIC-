@@ -56,10 +56,11 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
     //Getters
 
     public void main(String[] args) {
+        Square current = new Square(8, 8);
         makeBoard();
         makeGUIOptions();
         boolean winner = false;
-        while(!winner) {
+        while (!winner) {
             //play();
         }
     }
@@ -77,9 +78,9 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 // Create a new Square
-                Square square =  new Square(row, col);
+                Square square = new Square(row, col);
                 //Place piece if appropriate
-                switch(row) {
+                switch (row) {
                     case 0:
                         //square.setForeground(Color.BLACK); Line superceded by the unicode specifying color
                         if(col == 0 || col == 7) {square.setText("\u265C");} //Black rooks
@@ -112,7 +113,50 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
                 boardPanel.add(board[row][col]);
             }
         }
+        // special color for border background
+        Color borderColor = new Color(120, 85, 60);
 
+        // Adding Border panels for the aplha and num guides
+        // Needs a blank corner panel to offset for centered alphas
+        JPanel cornerPanel = new JPanel(new GridLayout(1, 1));
+        cornerPanel.setPreferredSize(new Dimension(25, 25));
+        cornerPanel.setBackground(borderColor);
+        // cornerPanel.add(new JLabel(""));             if we wanted anything in the corner panel
+
+        // Create a JPanel that will hold row identifiers
+        JPanel rowPanel = new JPanel(new GridLayout(8, 1));
+        rowPanel.setPreferredSize(new Dimension(25, 800));
+        rowPanel.setBackground(borderColor);
+
+        // iterate through to label row
+        for (int i = 8; i >= 1; i--) {
+            JLabel row = new JLabel(String.valueOf(i), SwingConstants.CENTER);
+            row.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
+            row.setForeground(Color.white);
+            rowPanel.add(row);
+        }
+
+        // Create a JPanel that will hold column identifiers
+        JPanel colPanel = new JPanel(new GridLayout(1, 8));
+        colPanel.setPreferredSize(new Dimension(800, 25));
+        colPanel.setBackground(borderColor);
+
+        // iterate through to label col
+        for (char c = 'A'; c <= 'H'; c++) {
+            JLabel col = new JLabel(String.valueOf(c), SwingConstants.CENTER);
+            col.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
+            col.setForeground(Color.white);
+            colPanel.add(col);
+        }
+
+        // now a separate panel to hold the spacer corner and column identifiers
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(cornerPanel, BorderLayout.WEST);
+        topPanel.add(colPanel, BorderLayout.CENTER);
+
+        // add the panels to the board
+        this.add(topPanel, BorderLayout.NORTH);     // space corner and column aplha
+        this.add(rowPanel, BorderLayout.WEST);      // row numeric
         this.add(boardPanel, BorderLayout.CENTER);  // Add board panel to the frame
         this.pack();  // Pack the frame to fit the board
         this.setLocationRelativeTo(null);  // Center the frame
@@ -132,19 +176,30 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
     }
 
     /*Todo: Currently, these listener methods are for the main board only. Additional features may need to either
-    override these events again in their method or be split into separate classes, depending on what kind of conflicts arise*/
+        override these events again in their method or be split into separate classes, depending on what kind of conflicts arise*/
     @Override
-    public void actionPerformed(ActionEvent e){
+    public void actionPerformed(ActionEvent e) {
         Square source = (Square) e.getSource();
         //If the cursor changed squares during the click, do nothing
         if (!leftSquare) {
             //If this is the first click of a move, assign clicked square to square
-            if(!destinationPick) {
+            if (!destinationPick) {
                 squareClick = source;
                 destinationPick = true;
                 System.out.println("Click origin square: " + (source.getRow() + 1) + " " + (source.getCol() + 1));
             }
             else { //If this is the second click of a move, overwrite the second square with the first
+
+                // if destination has a king, trigger game over
+                String destinationText = source.getText();
+                if (destinationText.equals("\u265A")) {         //Black king
+                    showWinnerDialog("White", "Black");
+                }
+                else if (destinationText.equals("\u2654")) {    //White king
+                    showWinnerDialog("Black", "White");
+                }
+
+                // do the move
                 source.setText(squareClick.getText());
                 source.setForeground(squareClick.getForeground());
                 squareClick.setText("");
@@ -179,11 +234,34 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        newSquare =  (Square) e.getSource();
+        newSquare = (Square) e.getSource();
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
         leftSquare = true;
+    }
+
+    // Dialog box pop up for king capture
+    private void showWinnerDialog(String winnerColor, String loserColor) {
+        // Pass winning color + message to display
+        String message = winnerColor + " wins! The " + loserColor + " king has be captured.";
+        // Option pane with yes and no continuing on Winner dialog
+        // YES_NO_OPTION will return as an int
+        int choice = JOptionPane.showConfirmDialog(
+                this,
+                message + "\nWould you like to play again?",
+                "Game Over",
+                JOptionPane.YES_NO_OPTION);
+
+        // previous choice initiates either a clear and restart or exit of the game
+        if (choice == JOptionPane.YES_OPTION) {
+            // dispose the current GUI and make a new board. kinda like delete but doesn't exit program
+            this.dispose();
+            new GUIBoard().makeBoard();  // restart a new game window
+        }
+        else {
+            System.exit(0);
+        }
     }
 }
