@@ -9,15 +9,15 @@ public class Square extends JButton {
     //Private attributes
     private int col;
     private int row;
-    private String piece;
+    private boolean isLightSquare;
     //Default constructor
     public Square(int row, int col) {
         //Initialize class attributes
         this.row = row;
         this.col = col;
-        this.piece = "";
+        this.setText("");
         //Format button
-        this.setFont(new Font("Serif", Font.BOLD, 32)); // Make the piece characters bigger
+        this.setFont(new Font("Serif", Font.BOLD, 40)); // Make the piece characters bigger. Piece dimensions should be 1/20 overall board dimensions
         this.setHorizontalAlignment(JButton.CENTER);
         this.setVerticalAlignment(JButton.CENTER);
         //Give button a border
@@ -25,17 +25,20 @@ public class Square extends JButton {
         //Define square colors
         Color lightColor = new Color(240, 217, 181);
         Color darkColor = new Color(181, 136, 99);
-        //Assign square colors
+        //Assign square colors, isLightSquare property
         if ((row + col) % 2 == 0) {
             this.setBackground(lightColor);
+            this.isLightSquare = true;
         } else {
             this.setBackground(darkColor);
+            this.isLightSquare = false;
         }
     }
 
     //Getters
     public int getCol() {return col;}
     public int getRow() {return row;}
+    public boolean isLightSquare() {return isLightSquare;}
 
     //Setters
     public void setColumn(int c) {col = c;}

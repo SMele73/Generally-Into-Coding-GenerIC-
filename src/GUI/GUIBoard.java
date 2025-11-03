@@ -16,17 +16,53 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
     private boolean destinationPick = false;
     private boolean leftSquare = false;
     private Square newSquare;
+    private JPanel boardPanel = new JPanel();  //Initialized in makeBoard, modified by boardOptions
+    private final Square[][] board = new Square[8][8]; //Array of buttons
+
+    //Setters
+    //These operations could be much more efficient if combined, but we're not exactly hurting for processor power
+    public void setLightSquareColor(Color color) {
+        for(Square[] row : board){
+            for(Square column : row){
+                if(column.isLightSquare()){
+                    column.setBackground(color);}}}}
+    public void setDarkSquareColor(Color color) {
+        for(Square[] row : board){
+            for(Square column : row){
+                if(!column.isLightSquare()){
+                    column.setBackground(color);}}}}
+    public void setLightPieceColor(Color color) {
+        for(Square[] row : board){
+            for(Square column : row){
+                //If square holds a light-colored piece
+                if(column.getText().equals("\u2654") || column.getText().equals("\u2655") || column.getText().equals("\u2656") || column.getText().equals("\u2657")
+                        || column.getText().equals("\u2658") || column.getText().equals("\u2659")){
+                    column.setForeground(color);}}}}
+    public void setDarkPieceColor(Color color) {
+        for(Square[] row : board){
+            for(Square column : row){
+                //If square holds a light-colored piece
+                if(column.getText().equals("\u265A") || column.getText().equals("\u265B") || column.getText().equals("\u265C") || column.getText().equals("\u265D")
+                        || column.getText().equals("\u265E") || column.getText().equals("\u265F")){
+                    column.setForeground(color);}}}}
+    public void setBoardSize(int size) {
+        this.setSize(size, size);
+    }
+    public void setPieceSize(int size) {
+        for(Square[] row : board){
+            for(Square column : row){
+                column.setFont(new Font("Serif", Font.BOLD, size));}}}
+
+    //Getters
 
     public void main(String[] args) {
-        Square current = new Square(8,8);
         makeBoard();
+        makeGUIOptions();
         boolean winner = false;
         while(!winner) {
             //play();
         }
     }
-
-    private Square[][] board = new Square[8][8];
 
     public void makeBoard() {
         // Create the main frame for the chess board
@@ -34,7 +70,7 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         this.setLayout(new BorderLayout());
 
         // Create a JPanel that will hold the board
-        JPanel boardPanel = new JPanel(new GridLayout(8,8));
+        boardPanel.setLayout(new GridLayout(8,8));
         boardPanel.setPreferredSize(new Dimension(800, 800));
 
         // Create the chess board squares and pieces
@@ -61,7 +97,7 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
                         square.setText("\u2659");                            //White pawns
                         break;
                     case 7:
-                        //square.setForeground(Color.BLUE); Line superceded by the unicode specifying color
+                        //square.setForeground(Color.BLUE); //Line superceded by the unicode specifying color
                         if(col == 0 || col == 7) {square.setText("\u2656");} //White rooks
                         if(col == 1 || col == 6) {square.setText("\u2658");} //White knights
                         if(col == 2 || col == 5) {square.setText("\u2657");} //White bishops
@@ -77,15 +113,22 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
             }
         }
 
-
         this.add(boardPanel, BorderLayout.CENTER);  // Add board panel to the frame
         this.pack();  // Pack the frame to fit the board
         this.setLocationRelativeTo(null);  // Center the frame
         this.setVisible(true);
     }
 
-    public void makeDisplayOptions(){
-
+    //Todo: Turn this into another menu bar option once those are ready
+    public void makeGUIOptions(){
+        JButton GUIOptions = new JButton("Board display options");
+        class optionListener implements ActionListener{
+            public void actionPerformed(ActionEvent e){
+                GUIOptions option = new GUIOptions(GUIBoard.this);
+            }
+        }
+        GUIOptions.addActionListener(new optionListener());
+        this.add(GUIOptions, BorderLayout.NORTH);
     }
 
     /*Todo: Currently, these listener methods are for the main board only. Additional features may need to either
