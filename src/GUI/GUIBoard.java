@@ -225,10 +225,22 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
     public void mouseReleased(MouseEvent e) {
         //If the mouse has left the original square since the button was clicked, treat it as a drag.
         if (leftSquare) {
+
+            // if destination has a king, trigger game over
+            String destinationText = newSquare.getText();
+            if (destinationText.equals("\u265A")) {         //Black king
+                showWinnerDialog("White", "Black");
+            }
+            else if (destinationText.equals("\u2654")) {    //White king
+                showWinnerDialog("Black", "White");
+            }
+
             newSquare.setText(squareDrag.getText());
             newSquare.setForeground(squareDrag.getForeground());
             squareDrag.setText("");
             System.out.println("Destination square: " + (newSquare.getRow() + 1) + " " + (newSquare.getCol() + 1));
+
+
         }
     }
 
