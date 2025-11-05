@@ -80,23 +80,13 @@ public class Square {
 
     //Getters
     public int getColumn() {return col;}
-    public int getRow() {
-        return row;
-    }
-    public Piece getPiece() {
-        return piece;
-    }
+    public int getRow() {return row;}
+    public Piece getPiece() {return piece;}
 
     //Setters
-    public void setColumn(int c) {
-        col = c;
-    }
-    public void setRow(int r) {
-        row = r;
-    }
-    public void setPiece(Piece p) {
-        piece = p;
-    }
+    public void setColumn(int c) {col = c;}
+    public void setRow(int r) {row = r;}
+    public void setPiece(Piece p) {piece = p;}
 
 
     //Override .equals() for use in move lists
