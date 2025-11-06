@@ -58,7 +58,6 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
     public void main(String[] args) {
         Square current = new Square(8, 8);
         makeBoard();
-        makeGUIOptions();
         boolean winner = false;
         while (!winner) {
             //play();
@@ -69,6 +68,8 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         // Create the main frame for the chess board
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
+        //makeGUIOptions();
+        makeMenuBar();
 
         // Create a JPanel that will hold the board
         boardPanel.setLayout(new GridLayout(8,8));
@@ -113,6 +114,7 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
                 boardPanel.add(board[row][col]);
             }
         }
+        /*
         // special color for border background
         Color borderColor = new Color(120, 85, 60);
 
@@ -150,19 +152,30 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         }
 
         // now a separate panel to hold the spacer corner and column identifiers
-        JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.add(cornerPanel, BorderLayout.WEST);
-        topPanel.add(colPanel, BorderLayout.CENTER);
+        JPanel alphaPanel = new JPanel(new BorderLayout());
+        alphaPanel.add(cornerPanel, BorderLayout.WEST);
+        alphaPanel.add(colPanel, BorderLayout.CENTER);
+*/
+        JPanel topAlpha = createAlphaPanel();
+        JPanel bottomAlpha = createAlphaPanel();
+        JPanel leftNums = createNumericPanel();
+        JPanel rightNums = createNumericPanel();
 
         // add the panels to the board
-        this.add(topPanel, BorderLayout.NORTH);     // space corner and column aplha
-        this.add(rowPanel, BorderLayout.WEST);      // row numeric
+        this.add(topAlpha, BorderLayout.NORTH);     // space corner and column aplha
+        this.add(bottomAlpha, BorderLayout.SOUTH);
+        //this.add(alphaPanel, BorderLayout.SOUTH);
+        this.add(leftNums, BorderLayout.WEST);      // row numeric
+        this.add(rightNums, BorderLayout.EAST);
+        //this.add(rowPanel, BorderLayout.EAST);
         this.add(boardPanel, BorderLayout.CENTER);  // Add board panel to the frame
         this.pack();  // Pack the frame to fit the board
         this.setLocationRelativeTo(null);  // Center the frame
+
+
         this.setVisible(true);
     }
-
+/*
     //Todo: Turn this into another menu bar option once those are ready
     public void makeGUIOptions(){
         JButton GUIOptions = new JButton("Board display options");
@@ -173,6 +186,9 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         }
         GUIOptions.addActionListener(new optionListener());
         this.add(GUIOptions, BorderLayout.NORTH);
+    }*/
+    public void makeGUIOptions(){
+        GUIOptions optionWindow = new GUIOptions(this);
     }
 
     /*Todo: Currently, these listener methods are for the main board only. Additional features may need to either
@@ -275,5 +291,82 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         else {
             System.exit(0);
         }
+    }
+
+    private void makeMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+
+
+        // Game Menu
+        JMenu gameMenu = new JMenu("Game");
+        JMenuItem newGame = new JMenuItem("New Game");
+        newGame.addActionListener(e -> {
+            this.dispose();
+            new GUIBoard().makeBoard();
+        });
+        JMenuItem exit = new JMenuItem( "Exit");
+        exit.addActionListener(e -> System.exit(0));
+        gameMenu.add(newGame);
+        gameMenu.add(exit);
+
+        JMenu optionsMenu = new JMenu("Options");
+        JMenuItem boardOptions = new JMenuItem("Board Options");
+        boardOptions.addActionListener(e -> makeGUIOptions());
+        optionsMenu.add(boardOptions);
+
+
+        menuBar.add(gameMenu);
+        menuBar.add(optionsMenu);
+
+        this.setJMenuBar(menuBar);
+
+
+    }
+
+    private JPanel createAlphaPanel() {
+        Color borderColor = new Color(120, 85, 60);
+
+        JPanel alphaPanel = new JPanel(new BorderLayout());
+
+        JPanel westCorner =  new JPanel();
+        westCorner.setPreferredSize(new Dimension(25, 25));
+        westCorner.setBackground(borderColor);
+        alphaPanel.add(westCorner, BorderLayout.WEST);
+
+        JPanel eastCorner =  new JPanel();
+        eastCorner.setPreferredSize(new Dimension(25, 25));
+        eastCorner.setBackground(borderColor);
+        alphaPanel.add(eastCorner, BorderLayout.EAST);
+
+        JPanel colPanel = new JPanel(new GridLayout(1, 8));
+        colPanel.setPreferredSize(new Dimension(800, 25));
+        colPanel.setBackground(borderColor);
+
+        for (char c = 'A'; c <= 'H'; c++) {
+            JLabel col = new JLabel(String.valueOf(c), SwingConstants.CENTER);
+            col.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
+            col.setForeground(Color.WHITE);
+            colPanel.add(col);
+        }
+
+
+        alphaPanel.add(colPanel, BorderLayout.CENTER);
+        return alphaPanel;
+    }
+
+    private JPanel createNumericPanel(){
+        Color borderColor = new Color(120, 85, 60);
+        JPanel rowPanel = new JPanel(new GridLayout(8, 1));
+        rowPanel.setPreferredSize(new Dimension(25, 800));
+        rowPanel.setBackground(borderColor);
+
+        for (int i = 8; i >= 1; i--) {
+            JLabel row = new JLabel(String.valueOf(i), SwingConstants.CENTER);
+            row.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
+            row.setForeground(Color.WHITE);
+            rowPanel.add(row);
+
+        }
+        return rowPanel;
     }
 }
