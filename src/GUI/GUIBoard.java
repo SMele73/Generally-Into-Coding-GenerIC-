@@ -68,7 +68,7 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         // Create the main frame for the chess board
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
-        //makeGUIOptions();
+        // make MenuBar
         makeMenuBar();
 
         // Create a JPanel that will hold the board
@@ -114,66 +114,24 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
                 boardPanel.add(board[row][col]);
             }
         }
-        /*
-        // special color for border background
-        Color borderColor = new Color(120, 85, 60);
 
-        // Adding Border panels for the aplha and num guides
-        // Needs a blank corner panel to offset for centered alphas
-        JPanel cornerPanel = new JPanel(new GridLayout(1, 1));
-        cornerPanel.setPreferredSize(new Dimension(25, 25));
-        cornerPanel.setBackground(borderColor);
-        // cornerPanel.add(new JLabel(""));             if we wanted anything in the corner panel
-
-        // Create a JPanel that will hold row identifiers
-        JPanel rowPanel = new JPanel(new GridLayout(8, 1));
-        rowPanel.setPreferredSize(new Dimension(25, 800));
-        rowPanel.setBackground(borderColor);
-
-        // iterate through to label row
-        for (int i = 8; i >= 1; i--) {
-            JLabel row = new JLabel(String.valueOf(i), SwingConstants.CENTER);
-            row.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
-            row.setForeground(Color.white);
-            rowPanel.add(row);
-        }
-
-        // Create a JPanel that will hold column identifiers
-        JPanel colPanel = new JPanel(new GridLayout(1, 8));
-        colPanel.setPreferredSize(new Dimension(800, 25));
-        colPanel.setBackground(borderColor);
-
-        // iterate through to label col
-        for (char c = 'A'; c <= 'H'; c++) {
-            JLabel col = new JLabel(String.valueOf(c), SwingConstants.CENTER);
-            col.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
-            col.setForeground(Color.white);
-            colPanel.add(col);
-        }
-
-        // now a separate panel to hold the spacer corner and column identifiers
-        JPanel alphaPanel = new JPanel(new BorderLayout());
-        alphaPanel.add(cornerPanel, BorderLayout.WEST);
-        alphaPanel.add(colPanel, BorderLayout.CENTER);
-*/
         JPanel topAlpha = createAlphaPanel();
         JPanel bottomAlpha = createAlphaPanel();
         JPanel leftNums = createNumericPanel();
         JPanel rightNums = createNumericPanel();
 
         // add the panels to the board
-        this.add(topAlpha, BorderLayout.NORTH);     // space corner and column aplha
+        this.add(topAlpha, BorderLayout.NORTH);     // Alpha guides
         this.add(bottomAlpha, BorderLayout.SOUTH);
-        //this.add(alphaPanel, BorderLayout.SOUTH);
-        this.add(leftNums, BorderLayout.WEST);      // row numeric
+
+        this.add(leftNums, BorderLayout.WEST);      // Numeric guides
         this.add(rightNums, BorderLayout.EAST);
-        //this.add(rowPanel, BorderLayout.EAST);
+
         this.add(boardPanel, BorderLayout.CENTER);  // Add board panel to the frame
         this.pack();  // Pack the frame to fit the board
         this.setLocationRelativeTo(null);  // Center the frame
 
-
-        this.setVisible(true);
+        this.setVisible(true);      // make it all visible
     }
 /*
     //Todo: Turn this into another menu bar option once those are ready
@@ -296,46 +254,48 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
     private void makeMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
-
-        // Game Menu
-        JMenu gameMenu = new JMenu("Game");
-        JMenuItem newGame = new JMenuItem("New Game");
-        newGame.addActionListener(e -> {
+        // Game Menu    -- could make this its own method...
+        JMenu gameMenu = new JMenu("Game");                         // Game tab in menu
+        JMenuItem newGame = new JMenuItem("New Game");            // New Game item
+        newGame.addActionListener(e -> {                    // action for newGame
             this.dispose();
             new GUIBoard().makeBoard();
         });
-        JMenuItem exit = new JMenuItem( "Exit");
-        exit.addActionListener(e -> System.exit(0));
-        gameMenu.add(newGame);
-        gameMenu.add(exit);
+        JMenuItem exit = new JMenuItem( "Exit");                    // Exit item
+        exit.addActionListener(e -> System.exit(0));    // exit listener
+        gameMenu.add(newGame);      // adding the newgame
+        gameMenu.add(exit);         // adding exit
 
-        JMenu optionsMenu = new JMenu("Options");
-        JMenuItem boardOptions = new JMenuItem("Board Options");
-        boardOptions.addActionListener(e -> makeGUIOptions());
-        optionsMenu.add(boardOptions);
+        // Options Menu     -- could also make its own method to keep separate....
+        JMenu optionsMenu = new JMenu("Options");                         // Options tab in menu
+        JMenuItem boardOptions = new JMenuItem("Board Options");        // board options
+        boardOptions.addActionListener(e -> makeGUIOptions());    // make GUIOptions window
+        optionsMenu.add(boardOptions);      // add board options to options menu
 
 
         menuBar.add(gameMenu);
         menuBar.add(optionsMenu);
 
         this.setJMenuBar(menuBar);
-
-
     }
 
     private JPanel createAlphaPanel() {
-        Color borderColor = new Color(120, 85, 60);
+        Color borderColor = new Color(120, 85, 60);     // special background color
 
         JPanel alphaPanel = new JPanel(new BorderLayout());
 
+        // need spacer in corner
         JPanel westCorner =  new JPanel();
         westCorner.setPreferredSize(new Dimension(25, 25));
         westCorner.setBackground(borderColor);
+        // westCorner.add(new JLabel(""));             if we wanted anything in the corner panel
         alphaPanel.add(westCorner, BorderLayout.WEST);
 
+        // another spacer on other side for matchy matchy
         JPanel eastCorner =  new JPanel();
         eastCorner.setPreferredSize(new Dimension(25, 25));
         eastCorner.setBackground(borderColor);
+        // eastCorner.add(new JLabel(""));             if we wanted anything in the corner panel
         alphaPanel.add(eastCorner, BorderLayout.EAST);
 
         JPanel colPanel = new JPanel(new GridLayout(1, 8));
@@ -348,7 +308,6 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
             col.setForeground(Color.WHITE);
             colPanel.add(col);
         }
-
 
         alphaPanel.add(colPanel, BorderLayout.CENTER);
         return alphaPanel;
