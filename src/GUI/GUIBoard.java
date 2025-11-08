@@ -7,8 +7,17 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+/**
+ * This is the main class for GUI implementation. It could probably stand to be split up a little more.
+ * Currently, it makes and populates the board (a 2D array of buttons), has the minimal game flow logic needed for this step,
+ * makes the menu bar, and holds the logic for moving pieces
+ */
 public class GUIBoard extends JFrame implements MouseListener, ActionListener {
 
+    /**
+     * board is the array of Squares that make up the board
+     * All other private attributes except for the boardPanel that holds the board are used for piece movement logic
+     */
     //Create square to be used with mouse listeners
     //Set it outside of the board for validation
     private Square squareClick;
@@ -19,6 +28,10 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
     private JPanel boardPanel = new JPanel();  //Initialized in makeBoard, modified by boardOptions
     private final Square[][] board = new Square[8][8]; //Array of buttons
 
+    /**
+     * @see GUIOptions These setters are used by GUIOptions to modify the board
+     * All options go through each square on the board in turn.
+     */
     //Setters
     //These operations could be much more efficient if combined, but we're not exactly hurting for processor power
     public void setLightSquareColor(Color color) {
@@ -64,8 +77,12 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         }
     }
 
+    /**
+     * makeBoard sets up the Square array, places the pieces (currently the unicode chess characters in each button's text field),
+     * and adds borders to the board. It also contains the initial settings and code for the class as a whole
+     */
     public void makeBoard() {
-        // Create the main frame for the chess board
+        // Create the chess board
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
         // make MenuBar
@@ -133,22 +150,19 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
 
         this.setVisible(true);      // make it all visible
     }
-/*
-    //Todo: Turn this into another menu bar option once those are ready
-    public void makeGUIOptions(){
-        JButton GUIOptions = new JButton("Board display options");
-        class optionListener implements ActionListener{
-            public void actionPerformed(ActionEvent e){
-                GUIOptions option = new GUIOptions(GUIBoard.this);
-            }
-        }
-        GUIOptions.addActionListener(new optionListener());
-        this.add(GUIOptions, BorderLayout.NORTH);
-    }*/
+
+    /**
+     * @see GUIOptions This method adds a way to bring up the GUIOptions window to the frame
+     */
     public void makeGUIOptions(){
         GUIOptions optionWindow = new GUIOptions(this);
     }
 
+    /**
+     * Listener for the buttons that make up the board. Used lieu of the mouseEvent mouseClicked listener due to
+     * consistency issues.
+     * @param e the event to be processed
+     */
     /*Todo: Currently, these listener methods are for the main board only. Additional features may need to either
         override these events again in their method or be split into separate classes, depending on what kind of conflicts arise*/
     @Override
@@ -183,6 +197,7 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         }
     }
 
+    //This could be removed if
     @Override
     public void mouseClicked(MouseEvent e) {
         //This does nothing, mouse clicks being handled more consistently by the actionPerformed method
@@ -199,7 +214,6 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
     public void mouseReleased(MouseEvent e) {
         //If the mouse has left the original square since the button was clicked, treat it as a drag.
         if (leftSquare) {
-
             // if destination has a king, trigger game over
             String destinationText = newSquare.getText();
             if (destinationText.equals("\u265A")) {         //Black king
@@ -213,16 +227,23 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
             newSquare.setForeground(squareDrag.getForeground());
             squareDrag.setText("");
             System.out.println("Destination square: " + (newSquare.getRow() + 1) + " " + (newSquare.getCol() + 1));
-
-
         }
     }
 
+    /**
+     * Each time the mouse enters a new square, record that square in case it gets used for a move
+     * @param e the event to be processed
+     */
     @Override
     public void mouseEntered(MouseEvent e) {
         newSquare = (Square) e.getSource();
     }
 
+    /**
+     * This method sets a flag that determines whether a click is handled by the ActionPerformed listener (click-move)
+     * or the mousePressed and mouseReleased listeners (drag-move)
+     * @param e the event to be processed
+     */
     @Override
     public void mouseExited(MouseEvent e) {
         leftSquare = true;
@@ -251,6 +272,9 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         }
     }
 
+    /**
+     * This method handles the menu bar, except for the link to GUIOptions
+     */
     private void makeMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
@@ -279,6 +303,10 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         this.setJMenuBar(menuBar);
     }
 
+    /**
+     * Helper method to construct labels for the board's files
+     * @return The panel holding the labels
+     */
     private JPanel createAlphaPanel() {
         Color borderColor = new Color(120, 85, 60);     // special background color
 
@@ -313,6 +341,10 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         return alphaPanel;
     }
 
+    /**
+     * Helper method to construct labels for the board's ranks
+     * @return The panel holding the labels
+     */
     private JPanel createNumericPanel(){
         Color borderColor = new Color(120, 85, 60);
         JPanel rowPanel = new JPanel(new GridLayout(8, 1));
@@ -324,7 +356,6 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
             row.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
             row.setForeground(Color.WHITE);
             rowPanel.add(row);
-
         }
         return rowPanel;
     }
