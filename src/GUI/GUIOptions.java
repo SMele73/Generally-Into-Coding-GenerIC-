@@ -104,13 +104,13 @@ public class GUIOptions extends JDialog{
         JRadioButton small = new JRadioButton("Small");
         class smallListener implements ActionListener{
             @Override public void actionPerformed(ActionEvent e) {
-                boardSize = 400;}}
+                boardSize = 450;}}
         small.addActionListener(new smallListener());
 
         JRadioButton medium = new JRadioButton("Medium");
         class mediumListener implements ActionListener{
             @Override public void actionPerformed(ActionEvent e) {
-                boardSize = 600;}}
+                boardSize = 625;}}
         medium.addActionListener(new mediumListener());
 
         JRadioButton large = new JRadioButton("Large");
