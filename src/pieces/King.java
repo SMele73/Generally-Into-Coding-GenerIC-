@@ -1,8 +1,11 @@
 package pieces;
 
-import board.*;
+import GUI.Square;
 import java.util.ArrayList;
 import java.util.List;
+import utility.Constants;
+
+import static utility.Constants.FRIENDLY_COLOR;
 
 
 //TODO Castling
@@ -10,7 +13,7 @@ import java.util.List;
 
 public class King extends Piece {
 
-    public King(boolean color, Square square) {super(color, square);}
+    public King(Square square) {super(square);}
 
     private boolean moved = false;
     public void markMoved() { moved = true; }
@@ -26,7 +29,7 @@ public class King extends Piece {
     public List<Square> possibleMoves(Square[][] board) {
         List<Square> moves = new ArrayList<>();
         int row = getSquare().getRow();
-        int col = getSquare().getColumn();
+        int col = getSquare().getCol();
         boolean myColor = getColor();
         int[][] directions = {
                 { 1, 0},    // up
@@ -46,9 +49,9 @@ public class King extends Piece {
             if (newRow >= 1 && newRow <= 8 && newCol >= 1 && newCol <= 8) {
 
                 Square target = board[newRow][newCol];      // pull target square from board
-                Piece occupant = target.getPiece();         // check if piece exists
 
-                if (occupant == null || occupant.getColor() != myColor) { //if empty or piece is enemy, add to moves
+                //If target square is empty or has an enemy piece, it's a valid move
+                if (sameColor(target) != FRIENDLY_COLOR) {
                     moves.add(target);
                 }
             }

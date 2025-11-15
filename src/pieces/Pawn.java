@@ -1,14 +1,15 @@
 package pieces;
 
-import board.Square;
+import GUI.Square;
 import java.util.ArrayList;
 import java.util.List;
+import utility.Constants;
+
+import static utility.Constants.ENEMY_COLOR;
 
 public class Pawn extends Piece {
 
-    public Pawn(boolean color, Square square) {
-        super(color, square);
-    }
+    public Pawn(Square square) {super(square);}
     private boolean moved = false;
     public void markMoved() { moved = true; }
     public boolean hasMoved() { return moved; }
@@ -23,9 +24,8 @@ public class Pawn extends Piece {
     public List<Square> possibleMoves(Square[][] board) {
         List<Square> moves = new ArrayList<>();
         int currentRow = getSquare().getRow();
-        int currentCol = getSquare().getColumn();
+        int currentCol = getSquare().getCol();
         int direction = (getColor()) ? 1 : -1;   // assign pawn direction
-        boolean myColor = getColor();
 
         int nextRow = currentRow + direction;
         int twoRow = currentRow + 2 * direction;
@@ -33,7 +33,7 @@ public class Pawn extends Piece {
         // one square forward
         if (nextRow >= 1 && nextRow <= 8) {                     // bounds checking
             Square forward = board[nextRow][currentCol];
-            if (forward.getPiece() == null) {
+            if (forward.getText().isEmpty()) {
                 moves.add(forward);
             }
         }
@@ -42,7 +42,7 @@ public class Pawn extends Piece {
         if (!moved && twoRow >= 1 && twoRow <= 8) {          // condition and bounds checking
             Square forward = board[nextRow][currentCol];
             Square twoForward = board[twoRow][currentCol];
-            if (forward.getPiece() == null && twoForward.getPiece() == null) {
+            if (forward.getText().isEmpty() && twoForward.getText().isEmpty()) {
                 moves.add(twoForward);
             }
         }
@@ -51,14 +51,12 @@ public class Pawn extends Piece {
         for (int diagCol : diagnolCol) {
             if (nextRow >= 1 && nextRow <= 8 && diagCol >= 1 && diagCol <= 8) {     //bound checking and diag
                 Square target = board[nextRow][diagCol];
-                Piece occupant = target.getPiece();
-                if (occupant != null && occupant.getColor() != myColor) {
+                if (sameColor(target) == ENEMY_COLOR) { //If target holds an enemy piece
                     moves.add(target);
                 }
+
             }
         }
-
-        // TODO En passant somehow
 
         // TODO Promotion here?
         return moves;

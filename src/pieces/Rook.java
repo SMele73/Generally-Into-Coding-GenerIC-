@@ -1,14 +1,17 @@
 package pieces;
 
-import board.Square;
+import GUI.Square;
 import java.util.ArrayList;
 import java.util.List;
+import utility.Constants;
+
+import static utility.Constants.EMPTY;
+import static utility.Constants.ENEMY_COLOR;
 
 public class Rook extends Piece {
 
-    public Rook(boolean color) {super(color);}
-    public Rook(boolean color, Square square) {
-        super(color, square);
+    public Rook(Square square) {
+        super(square);
     }
 
     private boolean moved = false;
@@ -25,8 +28,7 @@ public class Rook extends Piece {
     public List<Square> possibleMoves(Square[][] board) {
         List<Square> moves = new ArrayList<>();
         int row = getSquare().getRow();
-        int col = getSquare().getColumn();
-        boolean myColor = getColor();
+        int col = getSquare().getCol();
 
         int[][] directions = {
                 { 1, 0},      // up
@@ -42,17 +44,20 @@ public class Rook extends Piece {
             while (newRow >= 1 && newRow <= 8 && newCol >= 1 && newCol <= 8){
 
                 Square target = board[newRow][newCol];      // pull target square from board
-                Piece occupant = target.getPiece();         // check if piece exists
+                int colorCheck = sameColor(target);
 
-                if (occupant == null) {     //if empty or occupied by enemy piece, add to moves
+                //If target square is empty, add it and continue
+                if (colorCheck == EMPTY)
                     moves.add(target);
-                }
-                else if(occupant.getColor() != myColor){
+
+                    //If target square has an enemy piece, add it and stop
+                else if (colorCheck == ENEMY_COLOR){
                     moves.add(target);
                     break;
                 }
-                else {
-                    break;                                  // end sliding if ever encounter another piece
+                //If target square has a friendly piece, stop immediately
+                else{
+                    break;
                 }
 
                 newRow += dir[0];

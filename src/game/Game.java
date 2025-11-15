@@ -12,7 +12,7 @@ import java.util.Scanner;
  * It handles the players, processes their moves for Board to use,
  * and determines the winner
  */
-public class Game {
+public class Game  {
 
     //Attributes
     private Board board;
@@ -29,7 +29,7 @@ public class Game {
 
     public void start() {
         board = new Board();
-        board.displayBoard();
+        //board.displayBoard();
     }
 
     //Getters
@@ -52,7 +52,7 @@ public class Game {
         while(!checkmate){
             boolean legal = false;
             while (!legal) {
-                requestMove(); //Get move from player, initial validation
+                //requestMove(); //Get move from player, initial validation
                 legal = sendMove(); //Attempt to perform move
             }
             currentPlayer = !currentPlayer; //Switch players
@@ -70,7 +70,7 @@ public class Game {
                         checkmate = false;}
                 }
             }*/
-            board.displayBoard();           //Show new board state
+            //board.displayBoard();           //Show new board state
         }
     }
 
@@ -89,6 +89,7 @@ public class Game {
      * currently in check.
      * Actual input and initial validation of the move is handled by Player
      */
+    /*Todo: Re-implement?
     public void requestMove() {
         if (currentPlayer) { //If white's turn
             System.out.println("Current turn: White.");
@@ -106,7 +107,7 @@ public class Game {
             }
             move = black.makeMove();
         }
-    }
+    }*/
 
     /**
      * Splits the validated move string into squares and calls Board to

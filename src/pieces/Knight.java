@@ -1,13 +1,16 @@
 package pieces;
 
-import board.Square;
+import GUI.Square;
 import java.util.ArrayList;
 import java.util.List;
+import utility.Constants;
+
+import static utility.Constants.FRIENDLY_COLOR;
 
 public class Knight extends Piece {
 
-    public Knight(boolean color, Square square) {
-        super(color, square);
+    public Knight(Square square) {
+        super(square);
     }
 
     @Override
@@ -19,7 +22,7 @@ public class Knight extends Piece {
     public List<Square> possibleMoves(Square[][] board) {
         List<Square> moves = new ArrayList<>();
         int row = getSquare().getRow();
-        int col = getSquare().getColumn();
+        int col = getSquare().getCol();
         boolean myColor = getColor();
 
         // only 8 possible moves a knight can make
@@ -35,8 +38,8 @@ public class Knight extends Piece {
             int newCol = offset[1] + col;
             if (newRow >= 1 && newRow <= 8 && newCol >= 1 && newCol <= 8) {     // bounds checking
                 Square target = board[newRow][newCol];                          // pull target from board
-                Piece occupant = target.getPiece();                             // check if occupied
-                if (occupant == null || occupant.getColor() != myColor) {       // empty or opposite color add
+                //If target square is empty or has an enemy piece, it's a valid move
+                if (sameColor(target) != FRIENDLY_COLOR) {
                     moves.add(target);
                 }
             }

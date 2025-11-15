@@ -11,8 +11,12 @@ import java.awt.*;
 public class Square extends JButton {
     //Private attributes
     private int col;
+    //colLetter is no longer needed for a gui-driven application
     private int row;
-    private boolean isLightSquare;
+    //Piece is no longer needed as the text field of JButton will fulfill the same duties
+    //Pieces will each have a square, but a square will no longer have a set piece
+    private final boolean isLightSquare;
+
     //Default constructor
     public Square(int row, int col) {
         //Initialize class attributes
@@ -47,6 +51,7 @@ public class Square extends JButton {
     public void setColumn(int c) {col = c;}
     public void setRow(int r) {row = r;}
 
+    //As far as we're concerned, squares are equivalent if they have the same row and column
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {return true;}

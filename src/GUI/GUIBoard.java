@@ -1,5 +1,10 @@
 package GUI;
 
+//Imports within package
+import pieces.*;
+import utility.Constants;
+
+//Java libraries
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,17 +21,26 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
 
     /**
      * board is the array of Squares that make up the board
-     * All other private attributes except for the boardPanel that holds the board are used for piece movement logic
+     * All other private attributes except for the boardPanel (which holds the board) are used for piece movement logic
      */
-    //Create square to be used with mouse listeners
-    //Set it outside of the board for validation
-    private Square squareClick;
-    private Square squareDrag;
+    //Create squares to be used with mouse listeners
+    private Square clickFrom;
+    private Square clickTo;
+    private Square dragFrom;
+    private Square dragTo;
+    //Flags to prevent a drag move and click move both from occurring
     private boolean destinationPick = false;
     private boolean leftSquare = false;
-    private Square newSquare;
+
+
     private JPanel boardPanel = new JPanel();  //Initialized in makeBoard, modified by boardOptions
-    private final Square[][] board = new Square[8][8]; //Array of buttons
+    private final Square[][] board = new Square[Constants.NUM_ROWS][Constants.NUM_COLS]; //Array of buttons
+    private Piece piece;
+
+    //Default constructor
+    public GUIBoard() {
+        //This is currently empty, all functions in it having been farmed out to makeBoard();
+    }
 
     /**
      * @see GUIOptions These setters are used by GUIOptions to modify the board
@@ -67,7 +81,6 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
                 column.setFont(new Font("Serif", Font.BOLD, size));}}}
 
     //Getters
-
     public void main(String[] args) {
         Square current = new Square(8, 8);
         makeBoard();
@@ -93,35 +106,35 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         boardPanel.setPreferredSize(new Dimension(800, 800));
 
         // Create the chess board squares and pieces
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
+        for (int row = 1; row < 9; row++) {
+            for (int col = 1; col < 9; col++) {
                 // Create a new Square
                 Square square = new Square(row, col);
                 //Place piece if appropriate
                 switch (row) {
-                    case 0:
-                        //square.setForeground(Color.BLACK); Line superceded by the unicode specifying color
-                        if(col == 0 || col == 7) {square.setText("\u265C");} //Black rooks
-                        if(col == 1 || col == 6) {square.setText("\u265E");} //Black knights
-                        if(col == 2 || col == 5) {square.setText("\u265D");} //Black bishops
-                        if(col == 3) {square.setText("\u265B");}             //Black queen
-                        if(col == 4) {square.setText("\u265A");}             //Black king
-                        break;
                     case 1:
+                        //square.setForeground(Color.BLACK); Line superceded by the unicode specifying color
+                        if(col == 1 || col == 8) {square.setText("\u265C");} //Black rooks
+                        if(col == 2 || col == 7) {square.setText("\u265E");} //Black knights
+                        if(col == 3 || col == 6) {square.setText("\u265D");} //Black bishops
+                        if(col == 4) {square.setText("\u265B");}             //Black queen
+                        if(col == 5) {square.setText("\u265A");}             //Black king
+                        break;
+                    case 2:
                         //square.setForeground(Color.BLACK); Line superceded by the unicode specifying color
                         square.setText("\u265F");                            //Black pawns
                         break;
-                    case 6:
+                    case 7:
                         //square.setForeground(Color.BLUE); Line superceded by the unicode specifying color
                         square.setText("\u2659");                            //White pawns
                         break;
-                    case 7:
+                    case 8:
                         //square.setForeground(Color.BLUE); //Line superceded by the unicode specifying color
-                        if(col == 0 || col == 7) {square.setText("\u2656");} //White rooks
-                        if(col == 1 || col == 6) {square.setText("\u2658");} //White knights
-                        if(col == 2 || col == 5) {square.setText("\u2657");} //White bishops
-                        if(col == 3) {square.setText("\u2655");}              //White queen
-                        if(col == 4) {square.setText("\u2654");}              //White king
+                        if(col == 1 || col == 8) {square.setText("\u2656");} //White rooks
+                        if(col == 2 || col == 7) {square.setText("\u2658");} //White knights
+                        if(col == 3 || col == 6) {square.setText("\u2657");} //White bishops
+                        if(col == 4) {square.setText("\u2655");}              //White queen
+                        if(col == 5) {square.setText("\u2654");}              //White king
                         break;
                 }
                 //Assign listeners to square, square to button array and board container
@@ -132,6 +145,7 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
             }
         }
 
+        //Create row panels
         JPanel topAlpha = createAlphaPanel();
         JPanel bottomAlpha = createAlphaPanel();
         JPanel leftNums = createNumericPanel();
@@ -170,34 +184,30 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         Square source = (Square) e.getSource();
         //If the cursor changed squares during the click, do nothing
         if (!leftSquare) {
-            //If this is the first click of a move, assign clicked square to square
+            //If this is the first click of a move, store clicked square to clickFrom
             if (!destinationPick) {
-                squareClick = source;
+                clickFrom = source;
                 destinationPick = true;
                 System.out.println("Click origin square: " + (source.getRow() + 1) + " " + (source.getCol() + 1));
             }
-            else { //If this is the second click of a move, overwrite the second square with the first
-
-                // if destination has a king, trigger game over
-                String destinationText = source.getText();
-                if (destinationText.equals("\u265A")) {         //Black king
-                    showWinnerDialog("White", "Black");
+            else { //If this is the second click of a move, store to clickTo
+                clickTo = source;
+                piece = makePiece(clickFrom);
+                //Perform initial validation
+                if(validMove(clickFrom, clickTo)) {
+                    source.setText(clickFrom.getText());
+                    source.setForeground(clickFrom.getForeground());
+                    clickFrom.setText("");
+                    destinationPick = false;
+                    System.out.println("Click destination square: " + (source.getRow() + 1) + " " + (source.getCol() + 1));
                 }
-                else if (destinationText.equals("\u2654")) {    //White king
-                    showWinnerDialog("Black", "White");
+                else{
+                    destinationPick = false;
                 }
-
-                // do the move
-                source.setText(squareClick.getText());
-                source.setForeground(squareClick.getForeground());
-                squareClick.setText("");
-                destinationPick = false;
-                System.out.println("Click destination square: " + (source.getRow() + 1) + " " + (source.getCol() + 1));
             }
         }
     }
 
-    //This could be removed if
     @Override
     public void mouseClicked(MouseEvent e) {
         //This does nothing, mouse clicks being handled more consistently by the actionPerformed method
@@ -206,27 +216,21 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
     @Override
     public void mousePressed(MouseEvent e) {
         leftSquare = false;
-        squareDrag = (Square) e.getSource();
-        System.out.println("Origin square: " + (squareDrag.getRow() + 1) + " " + (squareDrag.getCol() + 1));
+        dragFrom = (Square) e.getSource();
+        System.out.println("Origin square: " + (dragFrom.getRow() + 1) + " " + (dragFrom.getCol() + 1));
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         //If the mouse has left the original square since the button was clicked, treat it as a drag.
         if (leftSquare) {
-            // if destination has a king, trigger game over
-            String destinationText = newSquare.getText();
-            if (destinationText.equals("\u265A")) {         //Black king
-                showWinnerDialog("White", "Black");
+            piece = makePiece(dragFrom);
+            if(validMove(dragFrom, dragTo)) {
+                dragTo.setText(dragFrom.getText());
+                dragTo.setForeground(dragFrom.getForeground());
+                dragFrom.setText("");
+                System.out.println("Destination square: " + (dragTo.getRow() + 1) + " " + (dragTo.getCol() + 1));
             }
-            else if (destinationText.equals("\u2654")) {    //White king
-                showWinnerDialog("Black", "White");
-            }
-
-            newSquare.setText(squareDrag.getText());
-            newSquare.setForeground(squareDrag.getForeground());
-            squareDrag.setText("");
-            System.out.println("Destination square: " + (newSquare.getRow() + 1) + " " + (newSquare.getCol() + 1));
         }
     }
 
@@ -236,13 +240,13 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
      */
     @Override
     public void mouseEntered(MouseEvent e) {
-        newSquare = (Square) e.getSource();
+        dragTo = (Square) e.getSource();
     }
 
     /**
      * This method sets a flag that determines whether a click is handled by the ActionPerformed listener (click-move)
      * or the mousePressed and mouseReleased listeners (drag-move)
-     * @param e the event to be processed
+     * @param e Doesn't mean anything in this context
      */
     @Override
     public void mouseExited(MouseEvent e) {
@@ -358,5 +362,42 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
             rowPanel.add(row);
         }
         return rowPanel;
+    }
+
+    //There is definitely room to tighten this up a bit, currently the piece text is compared
+    //both here and in its respective piece subclass
+    //Generate a piece for the relevant square to use in validation
+    public Piece makePiece(Square square){
+        Piece piece;
+        switch (square.getText()) {
+            case "\u2659", "\u265F" -> piece = new Pawn(square);
+            case "\u2658", "\u265E" -> piece = new Knight(square);
+            case "\u2657", "\u265D" -> piece = new Bishop(square);
+            case "\u2656", "\u265C" -> piece = new Rook(square);
+            case "\u2655", "\u265B" -> piece = new Queen(square);
+            case "\u2654", "\u265A" -> piece = new King(square);
+            default -> {return null;}
+        }
+        return piece;
+    }
+    public boolean validMove(Square from, Square to) {
+        try {
+            if (piece == null) { //Does start square have a piece?
+                throw new IllegalArgumentException("No piece in that square!");
+            }
+            //TODO: Re-implement a check to make sure the current player is moving their own color piece
+            /*if (from.getPiece().getColor() != color) { //Is that piece the current player's color?
+                throw new IllegalArgumentException("That piece is not your color.");
+            }*/
+            if (!piece.possibleMoves(board).contains(to)) { //Is this a legal move for that piece?
+                throw new IllegalArgumentException("That move is not legal!");
+            }
+            return true;
+
+            //Color of a prospective capture is checked at the piece level and doesn't need to be rechecked here
+        } catch (IllegalArgumentException e) {
+            IllegalDialog illegal = new IllegalDialog(this, e.getMessage());
+            return false;
+        }
     }
 }
