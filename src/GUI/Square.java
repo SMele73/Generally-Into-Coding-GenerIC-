@@ -5,6 +5,9 @@ import pieces.Piece;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The squares here are augmented buttons
+ */
 public class Square extends JButton {
     //Private attributes
     private int col;

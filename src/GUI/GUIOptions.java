@@ -6,8 +6,17 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Class creates a dialog window offering board customization options
+ */
 public class GUIOptions extends JDialog{
 
+    /**
+     * Most of the attributes are self-explanatory
+     * sizeCheck is assigned from the height of the game board calling this class and is set as a class-wide variable
+     * so the board doesn't need to be passed around as much. It's sole use is for determining which radio button should
+     * be pre-selected in the board sizing panel.
+     */
     //Private attributes
     private Color lightSquaresColor;
     private Color darkSquaresColor;
@@ -19,13 +28,6 @@ public class GUIOptions extends JDialog{
     //private enum boardSize {Small, Medium, Large, NULL}
     private Integer boardSize = null;
     private int sizeCheck;
-    //Todo: Delete flags if they remain unused
-    /*Flags for private attributes
-    private boolean pickedLSC = false;
-    private boolean pickedDSC = false;
-    private boolean pickedLPC = false;
-    private boolean pickedDPC = false;
-    private boolean pickedBS = false;*/
 
     //Default constructor
     public GUIOptions(GUIBoard game){
@@ -39,12 +41,6 @@ public class GUIOptions extends JDialog{
         this.setLocationRelativeTo(game);   //Center the dialog over the chess game
         this.setVisible(true);
     }
-
-    /*Options:
-        Square colors (one each for light and dark)
-        Piece colors (one each for light and dark)
-        Board size (also changes piece size)
-     */
 
     //Outer panel to hold the options
     public void makeMiddle(){
@@ -108,13 +104,13 @@ public class GUIOptions extends JDialog{
         JRadioButton small = new JRadioButton("Small");
         class smallListener implements ActionListener{
             @Override public void actionPerformed(ActionEvent e) {
-                boardSize = 400;}}
+                boardSize = 450;}}
         small.addActionListener(new smallListener());
 
         JRadioButton medium = new JRadioButton("Medium");
         class mediumListener implements ActionListener{
             @Override public void actionPerformed(ActionEvent e) {
-                boardSize = 600;}}
+                boardSize = 625;}}
         medium.addActionListener(new mediumListener());
 
         JRadioButton large = new JRadioButton("Large");
@@ -193,5 +189,8 @@ public class GUIOptions extends JDialog{
         g.repaint();
     }
 
+    /**
+     * Closing the dialog is given its own method as getting dispose() to work properly in-line was proving troublesome.
+     */
     public void closeDialog(){this.dispose();}
 }
