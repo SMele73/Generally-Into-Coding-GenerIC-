@@ -13,6 +13,7 @@ public class Chess {
         game.start();
         game.play();
         game.end();*/
-        SwingUtilities.invokeLater(GUIBoard::new);
+        new GUIBoard();
+        //SwingUtilities.invokeLater(GUIBoard::new);
     }
 }

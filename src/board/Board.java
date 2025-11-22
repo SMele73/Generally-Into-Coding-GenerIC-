@@ -82,7 +82,8 @@ public class Board {
 
         //Perform move
         dest.setPiece(piece);
-        piece.setSquare(to); //Originally was set to dest rather than two. This should help avoid circular logic problems
+        // needs to use .move instead of set to trigger hasMoved flag
+        piece.move(to); //Originally was set to dest rather than two. This should help avoid circular logic problems
         orig.setPiece(null);
 
         // Pawn Promotion

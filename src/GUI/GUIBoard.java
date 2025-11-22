@@ -207,8 +207,10 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
                 System.out.println("Click destination square: "
                         + (source.getRow() + 1) + " " + (source.getCol() + 1));
 
+                // Attempts to move instead of triggering move regardless
                 attemptMove(squareClick, source);
 
+                // resets to empty/null values for next move
                 destinationPick = false;
                 squareClick = null;
             }
@@ -386,18 +388,24 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
     private int guiRowToBoardRow(int guiRow) {return 8 - guiRow;}
     private int guiColToBoardCol(int guiCol) {return guiCol + 1;}
 
+    // this is main driver to keep Gui correct and pulling from back end
+    // will iterate through board and fill Gui square based on what back end has
     private void syncGuiFromBoard () {
         board.Square[][] simSquares = gameBoard.getSquares();
 
         for (int guiRow = 0; guiRow < 8; guiRow++) {
             for (int guiCol = 0; guiCol < 8; guiCol++) {
+                // needs conversion to backend
                 int boardRow = guiRowToBoardRow(guiRow);
                 int boardCol = guiColToBoardCol(guiCol);
 
+                // checks the square and gets the piece
                 board.Square backendSquare = simSquares[boardRow][boardCol];
                 Piece piece = backendSquare.getPiece();
                 Square guiSquare = board[guiRow][guiCol];
 
+                // leaves the square empty if no piece, else it grabs the
+                // unicode with the helper function based on the piece found
                 if (piece == null) {
                     guiSquare.setText("");
                 } else {
@@ -408,6 +416,7 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         repaint();
     }
 
+    // our new method to try moving pieces that will go through the backend
     private void attemptMove(Square fromGui,  Square toGui) {
         if (fromGui == null || toGui == null)
             return;
@@ -422,6 +431,8 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         board.Square from = simSquares[fromBoardRow][fromBoardCol];
         board.Square to = simSquares[toBoardRow][toBoardCol];
 
+        // generic message to warn of move failure and exit function
+        // before switching player turn
         boolean moved = gameBoard.movePiece(from, to, whiteToMove);
         if (!moved) {
             JOptionPane.showMessageDialog(
@@ -434,6 +445,7 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         // player turn switching after successful move
         whiteToMove = !whiteToMove;
 
+        // update Gui after move
         syncGuiFromBoard();
 
         // check for check/mate of next player
@@ -444,6 +456,7 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
                     this,
                     checked + " king is in check!");
 
+            //
             if (gameBoard.isCheckmate(sideInCheckColor)) {
                 String winner = sideInCheckColor ? "Black" : "White";
                 showWinnerDialog(winner, checked);
