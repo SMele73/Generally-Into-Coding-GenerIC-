@@ -25,7 +25,7 @@ public class Pawn extends Piece {
         List<Square> moves = new ArrayList<>();
         int currentRow = getSquare().getRow();
         int currentCol = getSquare().getCol();
-        int direction = (getColor()) ? 1 : -1;   // assign pawn direction
+        int direction = (getColor()) ? -1 : 1;   // assign pawn direction
 
         int nextRow = currentRow + direction;
         int twoRow = currentRow + 2 * direction;
