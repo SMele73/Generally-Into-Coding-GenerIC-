@@ -48,7 +48,7 @@ public class Game {
      * discarded and another move requested. Once a move is successful,
      * the updated board is printed to the console
      */
-    public void play() {
+    /*public void play() {
         while(!checkmate){
             boolean legal = false;
             while (!legal) {
@@ -56,7 +56,7 @@ public class Game {
                 legal = sendMove(); //Attempt to perform move
             }
             currentPlayer = !currentPlayer; //Switch players
-            /*//Check if new current player is checkmated
+            *//*Check if new current player is checkmated
             if(board.isCheck(currentPlayer)){
                 checkmate = board.isCheckmate(currentPlayer);
                 if(checkmate){
@@ -69,10 +69,10 @@ public class Game {
                     if (surrender != 'Y') {
                         checkmate = false;}
                 }
-            }*/
+            }*//*
             board.displayBoard();           //Show new board state
         }
-    }
+    }*/
 
     /**
      * Ends the game, announcing the victor
