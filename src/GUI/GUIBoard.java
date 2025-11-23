@@ -10,6 +10,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+// TODO this now must be run through Chess to start
+
 public class GUIBoard extends JFrame implements MouseListener, ActionListener {
 
     //Create square to be used with mouse listeners
@@ -433,6 +435,8 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
 
         // generic message to warn of move failure and exit function
         // before switching player turn
+        // TODO: change from generic catch all to specific illegal move
+        // TODO: or such messages. Probably use kevin's version of this
         boolean moved = gameBoard.movePiece(from, to, whiteToMove);
         if (!moved) {
             JOptionPane.showMessageDialog(
@@ -463,5 +467,4 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
             }
         }
     }
-
 }

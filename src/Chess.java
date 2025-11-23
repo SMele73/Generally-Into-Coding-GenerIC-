@@ -14,6 +14,5 @@ public class Chess {
         game.play();
         game.end();*/
         new GUIBoard();
-        //SwingUtilities.invokeLater(GUIBoard::new);
     }
 }
