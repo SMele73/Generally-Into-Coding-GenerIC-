@@ -73,7 +73,7 @@ public class Board {
 
         // quick check to start, abort if null
         if (movingPiece == null) {
-            System.out.println("No pice in that square");
+            System.out.println("No piece in that square");
             return false;
         }
 

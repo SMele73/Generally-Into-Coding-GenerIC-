@@ -272,7 +272,7 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
     // Dialog box pop up for king capture
     private void showWinnerDialog(String winnerColor, String loserColor) {
         // Pass winning color + message to display
-        String message = winnerColor + " wins! The " + loserColor + " king has be captured.";
+        String message = winnerColor + " wins! The " + loserColor + " king has been checkmated.";
         // Option pane with yes and no continuing on Winner dialog
         // YES_NO_OPTION will return as an int
         int choice = JOptionPane.showConfirmDialog(
