@@ -438,12 +438,12 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         // before switching player turn
         // TODO: change from generic catch all to specific illegal move
         // TODO: or such messages. Probably use kevin's version of this
-        boolean moved = gameBoard.movePiece(from, to, whiteToMove);
-        if (!moved) {
+        String moved = gameBoard.movePiece(from, to, whiteToMove);
+        if (!moved.equals("Valid move")) {
             JOptionPane.showMessageDialog(
                     this,
-                    "Move failed!",
-                    "Moved failure",
+                    moved,
+                    "Illegal move!",
                     JOptionPane.WARNING_MESSAGE);
             return; // must exit if failed to not end turn
         }

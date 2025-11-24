@@ -29,7 +29,6 @@ public class Game {
 
     public void start() {
         board = new Board();
-        board.displayBoard();
     }
 
     //Getters
@@ -113,7 +112,7 @@ public class Game {
      * confirm the move is legal and perform it
      * @return Boolean value. True if move was successfully performed
      */
-    public boolean sendMove() {
+    public String sendMove() {
         //Parse received move into square objects
         //Check if move is a castle attempt. If yes, check if castling is legal.
         //If yes, castle and end the move.

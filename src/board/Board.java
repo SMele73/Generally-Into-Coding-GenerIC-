@@ -59,108 +59,71 @@ public class Board {
     //Methods
 
     /**
-     * movePiece is the core of the program's logic. It receives and processes movement orders
+     * movePiece is the core of the program's logic. It receives, validates, and processes movement orders
      * @param from The original square of the piece to move
      * @param to The destination square of the piece to move
      * @param color The color of the current player, used for move validation
-     * @return A boolean value returned to callers. True indicates a successful move,
-     * false one that has failed and either never happened or was rolled back
+     * @return A string value is returned to callers. "Valid move" if valid,
+     * an explanatory message if not
+     * @throws IllegalArgumentException for invalid moves
      */
-    public boolean movePiece(Square from, Square to, boolean color) {
+    public String movePiece(Square from, Square to, boolean color) {
         //Load corresponding squares on the board
         Square orig = squares[from.getRow()][from.getColumn()];
         Square dest = squares[to.getRow()][to.getColumn()];
         Piece movingPiece = orig.getPiece();    // adding holder for moving piece to rollback
         piece = orig.getPiece();
 
-        // quick check to start, abort if null
-        if (movingPiece == null) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "No piece in origin square",
-                    "Illegal move!",
-                    JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-
-        // validate movement rules, abort if invalid
-        if (!validMove(orig, dest, color)) {
-            return false;
-        }
-
-        // rollback for capture piece
-        Piece capturedPiece = dest.getPiece();
-
-        // Start process of move but will rollback if in check
-        orig.setPiece(null);
-        dest.setPiece(movingPiece);
-        movingPiece.setSquare(dest);
-
-        if (isCheck(color)) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "This move leaves you in check",
-                    "Illegal move!",
-                    JOptionPane.WARNING_MESSAGE);
-            System.out.println("Illegal move, you leave yourself in check");
-
-            // roll back move
-            dest.setPiece(capturedPiece);
-            if (capturedPiece != null) {
-                capturedPiece.setSquare(dest);
+        from = squares[from.getRow()][from.getColumn()];
+        piece = from.getPiece();
+        //Move validation
+        try {
+            if (piece == null) { //Does start square have a piece?
+                throw new IllegalArgumentException("No piece in that square!");
             }
-            orig.setPiece(movingPiece);
-            movingPiece.setSquare(orig);
+            if (from.getPiece().getColor() != color) { //Is that piece the current player's color?
+                throw new IllegalArgumentException("That piece is not your color.");
+            }
+            if (!piece.possibleMoves(squares).contains(to)) { //Is this a legal move for that piece?
+                throw new IllegalArgumentException("That is not a valid move for this piece");
+            }
+            //Color of a prospective capture is checked at the piece level and doesn't need to be rechecked here
 
-            return false;
-        }
+            // rollback for capture piece
+            Piece capturedPiece = dest.getPiece();
 
-        // move is valid if we reach here
-        // set pawn, king, rook to moved for castle and double pawn move
+            // Start process of move but will rollback if in check
+            orig.setPiece(null);
+            dest.setPiece(movingPiece);
+            movingPiece.setSquare(dest);
 
-        if (movingPiece instanceof Pawn) {
-            ((Pawn) movingPiece).markMoved();
-        } else if (movingPiece instanceof King) {
-            ((King) movingPiece).markMoved();
-        } else if (movingPiece instanceof Rook) {
-            ((Rook) movingPiece).markMoved();
-        }
+            if (isCheck(color)) {
+                System.out.println("Illegal move, you leave yourself in check");
 
-/*      // Moving logic elsewhere
-        // Pawn Promotion
-        // TODO; Make front end popup to supply backend with options
-        // TODO  That will fix it and make promotions work simply
-        // TODO  don't promote unless you manually type in terminal to supply letters
-        if (piece instanceof Pawn) {
-            //white reaches 8 or black reaches 1
-            int promotionRow = piece.getColor() ? 8 : 1;
-            if (to.getRow() == promotionRow) {
-                System.out.print("Promote pawn to (Q, R, B, N): ");
-                Scanner scan = new Scanner(System.in);
-                String choice = scan.nextLine().trim().toUpperCase();
-
-                Piece newPiece;
-                switch (choice) {
-                    case "R":
-                        newPiece = new Rook(piece.getColor(), dest);
-                        break;
-                    case "B":
-                        newPiece = new Bishop(piece.getColor(), dest);
-                        break;
-                    case "N":
-                        newPiece = new Knight(piece.getColor(), dest);
-                        break;
-                    default:
-                        newPiece = new Queen(piece.getColor(), dest);
-                        break;
+                // roll back move
+                dest.setPiece(capturedPiece);
+                if (capturedPiece != null) {
+                    capturedPiece.setSquare(dest);
                 }
-                dest.setPiece(newPiece);
-                System.out.println((piece.getColor() ? "White" : "Black") +
-                        " pawn promoted to " + newPiece.getClass().getSimpleName() + "! Congratulations!");
+                orig.setPiece(movingPiece);
+                movingPiece.setSquare(orig);
+
+                throw new IllegalArgumentException("This move leaves you in check");
             }
-            //return true;
-        }*/
-        return true;
+
+            //After confirming move is valid, change movement flags on pawns, rooks, or king if needed.
+            if (movingPiece instanceof Pawn) {
+                ((Pawn) movingPiece).markMoved();
+            } else if (movingPiece instanceof King) {
+                ((King) movingPiece).markMoved();
+            } else if (movingPiece instanceof Rook) {
+                ((Rook) movingPiece).markMoved();
+            }
+
+            return "Valid move";
+        } catch (IllegalArgumentException e) {
+            return e.getMessage();
+        }
     }
 
     public void promotePawn(Square dest, Constants.PromotionChoice choice) {
@@ -184,45 +147,6 @@ public class Board {
                 " pawn promoted to " + newPiece.getClass().getSimpleName() +
                 "! Congratulations!");
 
-    }
-
-    /**
-     * Prints the state of the board to the console after each move
-     */
-    public void displayBoard() {
-        System.out.println("  A  B  C  D  E  F  G  H");
-        for (int c = Constants.NUM_ROWS - 1; c > 0; c--) {
-            System.out.print(c + " "); //Prints row numbers on left
-            for (int r = 1; r < Constants.NUM_COLS; r++) {
-                Square square = squares[c][r];
-                if (square.getPiece() != null) { //Check for piece on space
-                    piece = square.getPiece();
-                    if (piece.getColor()) {      //If a piece is there, print letter for piece's color
-                        System.out.print("w");
-                    } else { //(!piece.getColor()
-                        System.out.print("b");
-                    }
-                    //Then print a letter corresponding to the type of piece
-                    if (piece.getClass().equals(Pawn.class)) {
-                        System.out.print("P ");
-                    } else if (piece.getClass().equals(Rook.class)) {
-                        System.out.print("R ");
-                    } else if (piece.getClass().equals(Queen.class)) {
-                        System.out.print("Q ");
-                    } else if (piece.getClass().equals(King.class)) {
-                        System.out.print("K ");
-                    } else if (piece.getClass().equals(Bishop.class)) {
-                        System.out.print("B ");
-                    } else { // (piece.getClass().equals(Knight.class))
-                        System.out.print("N ");
-                    }
-                } else if ((c + r) % 2 == 0)
-                    System.out.print("## "); //## for black spaces
-                else
-                    System.out.print("   "); //Blank for white
-            }
-            System.out.println();
-        }
     }
 
     /**
@@ -269,17 +193,11 @@ public class Board {
      * Returns false and prints an explanation for invalid moves.
      * @throws IllegalArgumentException for invalid moves.
      */
-    public boolean validMove(Square from, Square to, boolean color) {
+    public String validMove(Square from, Square to, boolean color) {
         from = squares[from.getRow()][from.getColumn()];
         piece = from.getPiece();
         //Move validation
         try {
-            //Are the entered squares on the board?
-            /*Todo: Deletion candidate, board boundaries are checked during initial move validation
-            if (from.getRow() < 1 || from.getRow() > Constants.NUM_ROWS || from.getColumn() < 1 || from.getColumn() > Constants.NUM_COLS ||
-                    to.getRow() < 1 || to.getRow() > Constants.NUM_ROWS || to.getColumn() < 1 || to.getColumn() > Constants.NUM_COLS) {
-                throw new IllegalArgumentException("Invalid square(s)");
-            }*/
             if (piece == null) { //Does start square have a piece?
                 throw new IllegalArgumentException("No piece in that square!");
             }
@@ -289,12 +207,11 @@ public class Board {
             if (!piece.possibleMoves(squares).contains(to)) { //Is this a legal move for that piece?
                 throw new IllegalArgumentException("That move is not legal!");
             }
-            return true;
+            return "Valid move";
 
             //Color of a prospective capture is checked at the piece level and doesn't need to be rechecked here
         } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            return false;
+            return e.getMessage();
         }
     }
 
@@ -492,10 +409,10 @@ public class Board {
     }
 
     // actually perform the castle
-    public boolean performCastling(boolean color, boolean kingside) {
+    public String performCastling(boolean color, boolean kingside) {
         if (!canCastle(color, kingside)) {
             System.out.println("Castling not allowed.");
-            return false;
+            return "Castling not allowed";
         }
 
         // set coordinates for move
@@ -522,7 +439,6 @@ public class Board {
         // output if successful by color and side
         System.out.println((color ? "White" : "Black") +
                 (kingside ? " castles kingside" : " castles queenside"));
-        return true;
+        return "Valid move";
     }
-
 }
