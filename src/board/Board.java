@@ -2,6 +2,8 @@ package board;
 
 import pieces.*;
 import utility.Constants;
+
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -73,7 +75,11 @@ public class Board {
 
         // quick check to start, abort if null
         if (movingPiece == null) {
-            System.out.println("No piece in that square");
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No piece in origin square",
+                    "Illegal move!",
+                    JOptionPane.WARNING_MESSAGE);
             return false;
         }
 
@@ -91,6 +97,11 @@ public class Board {
         movingPiece.setSquare(dest);
 
         if (isCheck(color)) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "This move leaves you in check",
+                    "Illegal move!",
+                    JOptionPane.WARNING_MESSAGE);
             System.out.println("Illegal move, you leave yourself in check");
 
             // roll back move
