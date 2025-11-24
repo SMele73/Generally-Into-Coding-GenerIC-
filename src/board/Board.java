@@ -247,10 +247,54 @@ public class Board {
      * @return Boolean value. True if check king is checkmated, false if normal check
      */
     public boolean isCheckmate(boolean color) {
-        // quick check check or this is pointless
+        // quick check check to avoid running the whole thing
         if (!isCheck(color)) {
             return false;
         }
+
+        // instead of just checking king checkmate evasion
+        // we need to check all pieces on board for checkmate evasion
+        for (int r =1; r < Constants.NUM_ROWS; r++) {
+            for (int c = 1; c < Constants.NUM_COLS; c++) {
+                Square from = squares[r][c];
+                Piece p = from.getPiece();
+
+                // skip empty squares and wrong color pieces
+                if (p == null || p.getColor() != color){
+                    continue;
+                }
+                // create list of possible moves for pieces to check
+                List<Square> moves = p.possibleMoves(squares);
+
+                for (Square to : moves){
+                    // need holders for captured piece and square to move to
+                    Piece captured = to.getPiece();
+                    Square fromSq = p.getSquare();
+
+                    // try moving piece
+                    from.setPiece(null);
+                    to.setPiece(p);
+                    p.setSquare(to);
+
+                    // after moving check for check
+                    boolean stillInCheck = isCheck(color);
+
+                    // undo the move and roll back to check another move
+                    to.setPiece(captured);
+                    if (captured !=null) {
+                        captured.setSquare(to);
+                    }
+                    from.setPiece(p);
+                    p.setSquare(fromSq);
+
+                    // if we ever escape the check
+                    if (!stillInCheck) {
+                        return false;
+                    }
+                }
+            }
+        }
+        /*
         //Find king to check checkmate
         Square kingLoc = kingSearch(color);
         Piece kingPiece = kingLoc.getPiece();
@@ -288,7 +332,7 @@ public class Board {
                 // King has a safe space, not checkmate
                 return false;
             }
-        }
+        }*/
         // king has no escape route
         return true;
     }
