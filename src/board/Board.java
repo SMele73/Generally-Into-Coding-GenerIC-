@@ -115,7 +115,7 @@ public class Board {
             ((Rook) movingPiece).markMoved();
         }
 
-
+/*      // Moving logic elsewhere
         // Pawn Promotion
         // TODO; Make front end popup to supply backend with options
         // TODO  That will fix it and make promotions work simply
@@ -148,10 +148,32 @@ public class Board {
                         " pawn promoted to " + newPiece.getClass().getSimpleName() + "! Congratulations!");
             }
             //return true;
-        }
+        }*/
         return true;
     }
 
+    public void promotePawn(Square dest, Constants.PromotionChoice choice) {
+        Piece current = dest.getPiece();
+
+        // accident/bug check
+        if (!(current instanceof Pawn)){
+            System.out.println("Error: promotePawn called on non-pawn piece");
+            return;
+        }
+        boolean color = current.getColor();     //true = white, false = black
+        Piece newPiece = switch (choice) {
+            // enhanced switch statement to handle promotion choices
+            case KNIGHT -> new Knight(color, dest);
+            case ROOK -> new Rook(color, dest);
+            case BISHOP -> new Bishop(color, dest);
+            default -> new Queen(color, dest);
+        };
+        dest.setPiece(newPiece);
+        System.out.println((color ? "White" : "Black") +
+                " pawn promoted to " + newPiece.getClass().getSimpleName() +
+                "! Congratulations!");
+
+    }
 
     /**
      * Prints the state of the board to the console after each move
