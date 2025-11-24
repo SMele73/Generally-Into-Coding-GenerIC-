@@ -2,6 +2,7 @@ package GUI;
 
 import board.Board;
 import pieces.*;
+import utility.Constants;
 
 import javax.swing.*;
 import java.awt.*;
@@ -446,6 +447,9 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
                     JOptionPane.WARNING_MESSAGE);
             return; // must exit if failed to not end turn
         }
+        // handle promotion if needed
+        handlePromotion(to);
+
         // player turn switching after successful move
         whiteToMove = !whiteToMove;
 
@@ -467,4 +471,47 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
             }
         }
     }
+    // moved pawn promotion to pop up box for options and
+    private void handlePromotion(board.Square dest){
+        pieces.Piece p = dest.getPiece();
+
+        // not pawn, no promotion needed
+        if (!(p instanceof Pawn)) {
+            return;
+        }
+
+        // pawn is promoted if it reaches the end of the board
+        int promotionRow = p.getColor() ? 8 : 1; // white promotes on 8, black is 1
+        if (dest.getRow() != promotionRow) {
+            return;
+        }
+
+        // show dialog box for promotion choice
+        String[] options = {"Queen", "Rook", "Bishop", "Knight"};
+
+        int choiceIndex = JOptionPane.showOptionDialog(
+                this,
+                "Promote pawn to:",
+                "Promotion",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]);
+
+        // close after option selected
+        if (choiceIndex == JOptionPane.CLOSED_OPTION) {
+            choiceIndex = 0;        // default to queen if window closed
+        }
+
+        // switch for choice and promote pawn
+        Constants.PromotionChoice choice = switch (choiceIndex) {
+            case 1 -> Constants.PromotionChoice.ROOK;
+            case 2 -> Constants.PromotionChoice.BISHOP;
+            case 3 -> Constants.PromotionChoice.KNIGHT;
+            default -> Constants.PromotionChoice.QUEEN;
+        };
+        gameBoard.promotePawn(dest, choice);
+    }
+
 }
