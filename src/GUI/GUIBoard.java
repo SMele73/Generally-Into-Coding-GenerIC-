@@ -318,6 +318,10 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         menuBar.add(gameMenu);
         menuBar.add(optionsMenu);
 
+        // glue turn indicator to the right side of the menu bar
+        menuBar.add(Box.createHorizontalGlue());    // glues following menu items to the right side of the menu bar
+        menuBar.add(playerTurnLabel);
+
         this.setJMenuBar(menuBar);
     }
 
@@ -370,6 +374,9 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         }
         return rowPanel;
     }
+
+    // player turn label
+    private JLabel playerTurnLabel = new JLabel("White to move");
 
     private String getUnicodeForPiece(Piece piece) {
         boolean isWhite = piece.getColor();
@@ -452,6 +459,7 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
 
         // player turn switching after successful move
         whiteToMove = !whiteToMove;
+        playerTurnLabel.setText(whiteToMove ? "White to move" : "Black to move");   //Swap turn label
 
         // update Gui after move
         syncGuiFromBoard();
