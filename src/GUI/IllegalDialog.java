@@ -5,6 +5,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * @deprecated Shawn found a pre-built way to show invalid moves that's easier to use.
+ */
 public class IllegalDialog extends JDialog {
 
     //Default constructor
@@ -38,25 +41,3 @@ public class IllegalDialog extends JDialog {
      */
     public void closeDialog(){this.dispose();}
 }
-
-/*
-public boolean validMove(Square from, Square to) {
-        try {
-            if (piece == null) { //Does start square have a piece?
-                throw new IllegalArgumentException("No piece in that square!");
-            }
-            //TODO: Re-implement a check to make sure the current player is moving their own color piece
-            if (from.getPiece().getColor() != color) { //Is that piece the current player's color?
-                throw new IllegalArgumentException("That piece is not your color.");
-            }
-            if (!piece.possibleMoves(board).contains(to)) { //Is this a legal move for that piece?
-        throw new IllegalArgumentException("That move is not legal!");
-            }
-                    return true;
-
-                    //Color of a prospective capture is checked at the piece level and doesn't need to be rechecked here
-                    } catch (IllegalArgumentException e) {
-IllegalDialog illegal = new IllegalDialog(this, e.getMessage());
-            return false;
-                    }
- */

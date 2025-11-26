@@ -3,6 +3,10 @@ package pieces;
 import board.Square;
 import java.util.List;
 
+/**
+ * The superclass used by the individual pieces. Consists of a color and a location, with the subclasses
+ * implementing movement logic
+ */
 public abstract class Piece {
 
     private final boolean color;    //White = true, black = false

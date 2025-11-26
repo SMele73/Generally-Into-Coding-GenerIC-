@@ -5,6 +5,10 @@ import pieces.Piece;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Class is the frontend version of a square: a button that has a row/column but is not given piece objects,
+ * those being handled by the backend
+ */
 public class Square extends JButton {
     //Private attributes
     private int col;

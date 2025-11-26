@@ -4,6 +4,9 @@ import board.Square;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Everybody's favorite sailboat-turned-priest
+ */
 public class Bishop extends Piece {
 
     public Bishop(boolean color, Square square) {

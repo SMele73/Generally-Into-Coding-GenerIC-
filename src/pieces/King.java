@@ -7,7 +7,9 @@ import java.util.List;
 
 //TODO Castling
 
-
+/**
+ * Long live the king!
+ */
 public class King extends Piece {
 
     public King(boolean color, Square square) {super(color, square);}

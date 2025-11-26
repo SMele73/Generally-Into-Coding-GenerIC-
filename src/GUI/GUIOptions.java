@@ -6,6 +6,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * This class is a dialog containing customization options for the board.
+ * Board size, piece color, and square colors can all be changed. Piece and square colors are split into light and dark
+ */
 public class GUIOptions extends JDialog{
 
     //Private attributes
@@ -19,13 +23,6 @@ public class GUIOptions extends JDialog{
     //private enum boardSize {Small, Medium, Large, NULL}
     private Integer boardSize = null;
     private int sizeCheck;
-    //Todo: Delete flags if they remain unused
-    /*Flags for private attributes
-    private boolean pickedLSC = false;
-    private boolean pickedDSC = false;
-    private boolean pickedLPC = false;
-    private boolean pickedDPC = false;
-    private boolean pickedBS = false;*/
 
     //Default constructor
     public GUIOptions(GUIBoard game){
@@ -40,13 +37,9 @@ public class GUIOptions extends JDialog{
         this.setVisible(true);
     }
 
-    /*Options:
-        Square colors (one each for light and dark)
-        Piece colors (one each for light and dark)
-        Board size (also changes piece size)
+    /**
+     * Make the options and required panels to contain them
      */
-
-    //Outer panel to hold the options
     public void makeMiddle(){
         JPanel middlePanel = new JPanel();
         middlePanel.setLayout(new BoxLayout(middlePanel,BoxLayout.Y_AXIS));
@@ -144,7 +137,11 @@ public class GUIOptions extends JDialog{
         this.add(middlePanel,BorderLayout.CENTER);
     }
 
-    //Add standard ok/cancel/apply buttons to bottom of dialog
+    /**
+     * Add standard ok/cancel/apply buttons to the bottom of the dialog
+     * @param g is the board that will be modified with the chosen option(s).
+     *          It's not used in this method but passed on to another
+     */
     public void makeBottom(GUIBoard g){
         JPanel bottom = new JPanel();   //Make panel
 
@@ -183,6 +180,10 @@ public class GUIOptions extends JDialog{
         this.add(bottom, BorderLayout.SOUTH);
     }
 
+    /**
+     * Applies any changed options to the game
+     * @param g is the game being modified
+     */
     //Modify the chess game GUI elements according to user choices
     public void applyChoices(GUIBoard g){
         if (lightSquaresColor != null){g.setLightSquareColor(lightSquaresColor);}
@@ -193,5 +194,8 @@ public class GUIOptions extends JDialog{
         g.repaint();
     }
 
+    /**
+     * Method to close the dialog as doing so without wrapping it in a method causes unexpected behavior
+     */
     public void closeDialog(){this.dispose();}
 }

@@ -8,6 +8,7 @@ import static java.lang.Character.isDigit;
 import static java.lang.Character.isLetter;
 
 /**
+ * @deprecated Class is no longer used following Game being phased out
  * Player handles the input of moves and confirms they are in proper chess notation
  * before passing them on to Game for further use.
  */

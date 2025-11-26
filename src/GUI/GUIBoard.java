@@ -11,12 +11,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-// TODO this now must be run through Chess to start
-
+/**
+ * Frontend of the chess game. Displays the board and options to the players, receives and passes on their input
+ */
 public class GUIBoard extends JFrame implements MouseListener, ActionListener {
 
-    //Create square to be used with mouse listeners
-    //Set it outside of the board for validation
+    //Create squares to be used with mouse listeners and listener flags
     private Square squareClick;
     private Square squareDrag;
     private boolean destinationPick = false;
@@ -26,7 +26,9 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
     private final Square[][] board = new Square[8][8]; //Array of buttons
 
     private Board gameBoard;
-    private boolean whiteToMove = true;
+
+    private boolean whiteToMove = true;                                 //Keeps track of the current player
+    private JLabel playerTurnLabel = new JLabel("White to move "); //Turn indicator
 
     //Setters
     //These operations could be much more efficient if combined, but we're not exactly hurting for processor power
@@ -62,27 +64,16 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
             for(Square column : row){
                 column.setFont(new Font("Serif", Font.BOLD, size));}}}
 
-    //Getters
-
-    /*  REMOVING TO RUN FROM CHESS
-
-    public void main(String[] args) {
-        Square current = new Square(8, 8);
-        //makeBoard();
-        boolean winner = false;
-        while (!winner) {
-            //play();
-        }
-    }
-
-     */
-
     public GUIBoard() {
         gameBoard = new Board();
         makeBoard();
         syncGuiFromBoard();
     }
 
+    /**
+     * Makes the GUI of the board; a 2x2 array of buttons with a menu bar and board borders
+     * Does not place the pieces, those are pulled from the backend in a different method
+     */
     public void makeBoard() {
         // Create the main frame for the chess board
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -94,41 +85,11 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         boardPanel.setLayout(new GridLayout(8,8));
         boardPanel.setPreferredSize(new Dimension(800, 800));
 
-         //Create the chess board squares and pieces
+        //Create the chess board squares and pieces
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 // Create a new Square
                 Square square = new Square(row, col);
-                //Place piece if appropriate
-
-                // likely be unused if i can get it working to pull from back end
-                // so it will be filling the GUI a different way
-                /*switch (row) {
-                    case 0:
-                        //square.setForeground(Color.BLACK); Line superceded by the unicode specifying color
-                        if(col == 0 || col == 7) {square.setText("\u265C");} //Black rooks
-                        if(col == 1 || col == 6) {square.setText("\u265E");} //Black knights
-                        if(col == 2 || col == 5) {square.setText("\u265D");} //Black bishops
-                        if(col == 3) {square.setText("\u265B");}             //Black queen
-                        if(col == 4) {square.setText("\u265A");}             //Black king
-                        break;
-                    case 1:
-                        //square.setForeground(Color.BLACK); Line superceded by the unicode specifying color
-                        square.setText("\u265F");                            //Black pawns
-                        break;
-                    case 6:
-                        //square.setForeground(Color.BLUE); Line superceded by the unicode specifying color
-                        square.setText("\u2659");                            //White pawns
-                        break;
-                    case 7:
-                        //square.setForeground(Color.BLUE); //Line superceded by the unicode specifying color
-                        if(col == 0 || col == 7) {square.setText("\u2656");} //White rooks
-                        if(col == 1 || col == 6) {square.setText("\u2658");} //White knights
-                        if(col == 2 || col == 5) {square.setText("\u2657");} //White bishops
-                        if(col == 3) {square.setText("\u2655");}              //White queen
-                        if(col == 4) {square.setText("\u2654");}              //White king
-                        break;
-                }*/
 
                 //Assign listeners to square, square to button array and board container
                 board[row][col] = square;
@@ -138,6 +99,7 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
             }
         }
 
+        //Create the board border panels
         JPanel topAlpha = createAlphaPanel();
         JPanel bottomAlpha = createAlphaPanel();
         JPanel leftNums = createNumericPanel();
@@ -156,75 +118,45 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
 
         this.setVisible(true);      // make it all visible
     }
-/*
-    //Todo: Turn this into another menu bar option once those are ready
-    public void makeGUIOptions(){
-        JButton GUIOptions = new JButton("Board display options");
-        class optionListener implements ActionListener{
-            public void actionPerformed(ActionEvent e){
-                GUIOptions option = new GUIOptions(GUIBoard.this);
-            }
-        }
-        GUIOptions.addActionListener(new optionListener());
-        this.add(GUIOptions, BorderLayout.NORTH);
-    }*/
-    public void makeGUIOptions(){
-        GUIOptions optionWindow = new GUIOptions(this);
-    }
 
-    /*Todo: Currently, these listener methods are for the main board only. Additional features may need to either
-        override these events again in their method or be split into separate classes, depending on what kind of conflicts arise*/
+    /**
+     * Method handles click-moves
+     * @param e the event to be processed
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         Square source = (Square) e.getSource();
         //If the cursor changed squares during the click, do nothing
         if (!leftSquare) {
-            //If this is the first click of a move, assign clicked square to square
+            //If this is the first click of a move, assign clicked square to source
             if (!destinationPick) {
                 squareClick = source;
                 destinationPick = true;
-                System.out.println("Click origin square: " +
-                        (source.getRow() + 1) + " " + (source.getCol() + 1));
             }
             else { // second click. destination to attempt move thru backend
-
-                /*   REPLACING WITH BACKEND CHECKING
-                //If this is the second click of a move, overwrite the second square with the first
-
-                // if destination has a king, trigger game over
-                String destinationText = source.getText();
-                if (destinationText.equals("\u265A")) {         //Black king
-                    showWinnerDialog("White", "Black");
-                }
-                else if (destinationText.equals("\u2654")) {    //White king
-                    showWinnerDialog("Black", "White");
-                }
-
-                // do the move
-                source.setText(squareClick.getText());
-                source.setForeground(squareClick.getForeground());
-                squareClick.setText("");
-                destinationPick = false;
-                 */
-
-                System.out.println("Click destination square: "
-                        + (source.getRow() + 1) + " " + (source.getCol() + 1));
-
                 // Attempts to move instead of triggering move regardless
                 attemptMove(squareClick, source);
 
-                // resets to empty/null values for next move
+                // reset flag and empty squareClick to prepare for next move
                 destinationPick = false;
                 squareClick = null;
             }
         }
     }
 
+    /**
+     * @deprecated Does nothing, but can't use MouseAdapter instead as the class is already extending JFrame
+     * @param e the event to be processed
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
         //This does nothing, mouse clicks being handled more consistently by the actionPerformed method
     }
 
+    /**
+     * Sets flag and loads clicked square in preparation for a possible drag-move
+     * @param e the event to be processed
+     */
     @Override
     public void mousePressed(MouseEvent e) {
         leftSquare = false;
@@ -232,45 +164,38 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         System.out.println("Origin square: " + (squareDrag.getRow() + 1) + " " + (squareDrag.getCol() + 1));
     }
 
+    /**
+     * On LMB release, sends the move to the backend if the cursor left the original square after LMB press
+     * @param e the event to be processed
+     */
     @Override
     public void mouseReleased(MouseEvent e) {
         //If the mouse has left the original square since the button was clicked, treat it as a drag.
         if (leftSquare) {
-
-            /* AGAIN USING BACK END TO HANDLE
-            // if destination has a king, trigger game over
-            String destinationText = newSquare.getText();
-            if (destinationText.equals("\u265A")) {         //Black king
-                showWinnerDialog("White", "Black");
-            }
-            else if (destinationText.equals("\u2654")) {    //White king
-                showWinnerDialog("Black", "White");
-            }
-
-            newSquare.setText(squareDrag.getText());
-            newSquare.setForeground(squareDrag.getForeground());
-            squareDrag.setText("");
-
-             */
-            System.out.println("Destination square: " +
-                    (newSquare.getRow() + 1) + " " + (newSquare.getCol() + 1));
-
             attemptMove(squareDrag, newSquare);
-
         }
     }
 
+    /**
+     * Each time the cursor enters a new square that square loaded into newSquare in case it's needed
+     * @param e the event to be processed
+     */
     @Override
-    public void mouseEntered(MouseEvent e) {
-        newSquare = (Square) e.getSource();
-    }
+    public void mouseEntered(MouseEvent e) {newSquare = (Square) e.getSource();}
 
+    /**
+     * Whenever the cursor leaves a square, a flag is set
+     */
     @Override
     public void mouseExited(MouseEvent e) {
         leftSquare = true;
     }
 
-    // Dialog box pop up for king capture
+    /**
+     * Dialog box popup once a checkmate ends the game
+     * @param winnerColor is the victor
+     * @param loserColor is the vanquished
+     */
     private void showWinnerDialog(String winnerColor, String loserColor) {
         // Pass winning color + message to display
         String message = winnerColor + " wins! The " + loserColor + " king has been checkmated.";
@@ -293,6 +218,9 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         }
     }
 
+    /**
+     * Method to construct the game's menu options
+     */
     private void makeMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
@@ -311,9 +239,8 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         // Options Menu     -- could also make its own method to keep separate....
         JMenu optionsMenu = new JMenu("Options");                         // Options tab in menu
         JMenuItem boardOptions = new JMenuItem("Board Options");        // board options
-        boardOptions.addActionListener(e -> makeGUIOptions());    // make GUIOptions window
+        boardOptions.addActionListener(e -> new GUIOptions(this));    // make GUIOptions window
         optionsMenu.add(boardOptions);      // add board options to options menu
-
 
         menuBar.add(gameMenu);
         menuBar.add(optionsMenu);
@@ -325,6 +252,10 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         this.setJMenuBar(menuBar);
     }
 
+    /**
+     * Creates the bars that go above and below the board and show file letters
+     * @return the panel
+     */
     private JPanel createAlphaPanel() {
         Color borderColor = new Color(120, 85, 60);     // special background color
 
@@ -359,6 +290,10 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         return alphaPanel;
     }
 
+    /**
+     * Creates the bars that go to the left and right of the board and show row numbers
+     * @return the panel
+     */
     private JPanel createNumericPanel(){
         Color borderColor = new Color(120, 85, 60);
         JPanel rowPanel = new JPanel(new GridLayout(8, 1));
@@ -375,31 +310,30 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         return rowPanel;
     }
 
-    // player turn label
-    private JLabel playerTurnLabel = new JLabel("White to move");
-
+    /**
+     * Method pulls pieces from backend and translates them to player-visible icons
+     * @param piece is the piece object to translate
+     * @return the proper unicode character
+     */
     private String getUnicodeForPiece(Piece piece) {
         boolean isWhite = piece.getColor();
 
-        // instead of placing on board directly, pull from back-end
-        // if piece is instanceof paint unicode
-        if (piece instanceof King)  return isWhite ? "♔" : "♚";   //"\u2654" : "\u265A"
-        if (piece instanceof Queen) return isWhite ? "♕" : "♛";   //"\u2655" : "\u265B"
-        if (piece instanceof Rook)  return isWhite ? "♖" : "♜";   //"\u2656" : "\u265C"
-        if (piece instanceof Bishop)return isWhite ? "♗" : "♝";   //"\u2657" : "\u265D"
-        if (piece instanceof Knight)return isWhite ? "♘" : "♞";   //"\u2658" : "\u265E"
-        if (piece instanceof Pawn)  return isWhite ? "♙" : "♟";   //"\u2659" : "\u265F"
+        return switch (piece) {
+            case King king -> isWhite ? "♔" : "♚";   //"\u2654" : "\u265A"
+            case Queen queen -> isWhite ? "♕" : "♛";   //"\u2655" : "\u265B"
+            case Rook rook -> isWhite ? "♖" : "♜";   //"\u2656" : "\u265C"
+            case Bishop bishop -> isWhite ? "♗" : "♝";   //"\u2657" : "\u265D"
+            case Knight knight -> isWhite ? "♘" : "♞";   //"\u2658" : "\u265E"
+            case Pawn pawn -> isWhite ? "♙" : "♟";   //"\u2659" : "\u265F"
+            default -> "";
+        };
 
-        return "";
     }
 
-    // since we use 1-8 for back-end we need to translate between GUI and back-end
-    // also swaps side for row since 8 is up top
-    private int guiRowToBoardRow(int guiRow) {return 8 - guiRow;}
-    private int guiColToBoardCol(int guiCol) {return guiCol + 1;}
-
-    // this is main driver to keep Gui correct and pulling from back end
-    // will iterate through board and fill Gui square based on what back end has
+    /**
+     * Main driver for what the GUI shows to players. Iterates through board and translates contents of
+     * each square to what the players should see
+     */
     private void syncGuiFromBoard () {
         board.Square[][] simSquares = gameBoard.getSquares();
 
@@ -427,6 +361,13 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
     }
 
     // our new method to try moving pieces that will go through the backend
+
+    /**
+     * Method sends a move to the backend for processing. Aborts and displays popup for invalid moves.
+     * If move is valid, update the board state and display any required messages
+     * @param fromGui is the move's origin square
+     * @param toGui is the move's destination square
+     */
     private void attemptMove(Square fromGui,  Square toGui) {
         if (fromGui == null || toGui == null)
             return;
@@ -441,10 +382,7 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         board.Square from = simSquares[fromBoardRow][fromBoardCol];
         board.Square to = simSquares[toBoardRow][toBoardCol];
 
-        // generic message to warn of move failure and exit function
-        // before switching player turn
-        // TODO: change from generic catch all to specific illegal move
-        // TODO: or such messages. Probably use kevin's version of this
+        //If move is invalid, display a popup with the reason why and don't switch turns
         String moved = gameBoard.movePiece(from, to, whiteToMove);
         if (!moved.equals("Valid move")) {
             JOptionPane.showMessageDialog(
@@ -459,7 +397,7 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
 
         // player turn switching after successful move
         whiteToMove = !whiteToMove;
-        playerTurnLabel.setText(whiteToMove ? "White to move" : "Black to move");   //Swap turn label
+        playerTurnLabel.setText(whiteToMove ? "White to move " : "Black to move ");   //Swap turn label
 
         // update Gui after move
         syncGuiFromBoard();
@@ -522,4 +460,17 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         gameBoard.promotePawn(dest, choice);
     }
 
+    /**
+     * Helper method, translates frontend row to backend row
+     * @param guiRow is the frontend row
+     * @return is the backend row
+     */
+    private int guiRowToBoardRow(int guiRow) {return 8 - guiRow;}
+
+    /**
+     * Helper method, translates frontend column to backend column
+     * @param guiCol is the frontend column
+     * @return is the backend column
+     */
+    private int guiColToBoardCol(int guiCol) {return guiCol + 1;}
 }

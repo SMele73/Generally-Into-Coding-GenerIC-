@@ -4,6 +4,9 @@ import board.Square;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * It takes a strong man to know that his wife is so much better than he is without going mad
+ */
 public class Queen extends Piece {
 
     public Queen(boolean color, Square square) {

@@ -4,6 +4,9 @@ import board.Square;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Castle towers that move, just like they did in medieval times!
+ */
 public class Rook extends Piece {
 
     public Rook(boolean color) {super(color);}
@@ -62,5 +65,4 @@ public class Rook extends Piece {
         }
         return moves;
     }
-
 }

@@ -11,6 +11,7 @@ import java.util.Scanner;
  * The Game consists of two players and the Board they play on.
  * It handles the players, processes their moves for Board to use,
  * and determines the winner
+ * @deprecated Class was phased out in favor of GUIBoard
  */
 public class Game {
 
