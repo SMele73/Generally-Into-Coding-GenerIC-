@@ -1,0 +1,221 @@
+@startuml
+!theme reddress-darkgreen
+title Chess Project - Class Diagram
+
+left to right direction
+
+package "utility" {
+  class Constants {
+    {static} +NUM_ROWS : int
+    {static} +NUM_COLS : int
+    {static} +GUI_ROWS : int
+    {static} +GUI_COLS : int
+  }
+
+  enum PromotionChoice {
+    QUEEN
+    ROOK
+    BISHOP
+    KNIGHT
+  }
+}
+
+package "board" {
+  class Board {
+    - squares : Square[][]
+    - piece : Piece
+
+    + Board()
+    + getSquares() : Square[][]
+    + movePiece(from : Square, to : Square, color : boolean) : String
+    + promotePawn(dest : Square, choice : PromotionChoice) : void
+    + isCheck(targetKingColor : boolean) : boolean
+    + isCheckmate(color : boolean) : boolean
+    + canCastle(color : boolean, kingside : boolean) : boolean
+    + performCastling(color : boolean, kingside : boolean) : String
+
+    - placeBlack() : void
+    - placeWhite() : void
+    - kingSearch(color : boolean) : Square
+    - checkCheck(s : Square, k : Square) : boolean
+  }
+
+  class "board.Square" as BoardSquare {
+    - col : int
+    - colLetter : Character
+    - row : int
+    - piece : Piece
+
+    + Square(r : int, c : int)
+    + getColumn() : int
+    + getRow() : int
+    + getPiece() : Piece
+    + setColumn(c : int) : void
+    + setRow(r : int) : void
+    + setPiece(p : Piece) : void
+    + same(s : Square) : boolean
+  }
+}
+
+package "pieces" {
+  abstract class Piece {
+    - color : boolean
+    - square : BoardSquare
+
+    + Piece(color : boolean, square : BoardSquare)
+    + getColor() : boolean
+    + getSquare() : BoardSquare
+    + setSquare(s : BoardSquare) : void
+    + possibleMoves(board : BoardSquare[][]) : java.util.List<BoardSquare>
+  }
+
+  class Pawn extends Piece {
+    - moved : boolean
+
+    + Pawn(color : boolean, square : BoardSquare)
+    + markMoved() : void
+    + hasMoved() : boolean
+    '+ move(newSquare : BoardSquare) : void
+    + possibleMoves(board : BoardSquare[][]) : java.util.List<BoardSquare>
+  }
+
+  class Rook extends Piece {
+    - moved : boolean
+
+    + Rook(color : boolean, square : BoardSquare)
+    + markMoved() : void
+    + hasMoved() : boolean
+    + possibleMoves(board : BoardSquare[][]) : java.util.List<BoardSquare>
+  }
+
+  class King extends Piece {
+    - moved : boolean
+
+    + King(color : boolean, square : BoardSquare)
+    + markMoved() : void
+    + hasMoved() : boolean
+    + possibleMoves(board : BoardSquare[][]) : java.util.List<BoardSquare>
+  }
+
+  class Queen extends Piece {
+    + Queen(color : boolean, square : BoardSquare)
+    + possibleMoves(board : BoardSquare[][]) : java.util.List<BoardSquare>
+  }
+
+  class Bishop extends Piece {
+    + Bishop(color : boolean, square : BoardSquare)
+    + possibleMoves(board : BoardSquare[][]) : java.util.List<BoardSquare>
+  }
+
+  class Knight extends Piece {
+    + Knight(color : boolean, square : BoardSquare)
+    + possibleMoves(board : BoardSquare[][]) : java.util.List<BoardSquare>
+  }
+}
+
+package "GUI" {
+  class GUIBoard extends JFrame implements MouseListener, ActionListener {
+    - squareClick : GUISquare
+    - squareDrag : GUISquare
+    - destinationPick : boolean
+    - leftSquare : boolean
+    - newSquare : GUISquare
+    - boardPanel : JPanel
+    - board : GUISquare[][]
+    - gameBoard : Board
+    - whiteToMove : boolean
+    - playerTurnLabel : JLabel
+
+    + GUIBoard()
+    + setLightSquareColor(color : Color) : void
+    + setDarkSquareColor(color : Color) : void
+    + setLightPieceColor(color : Color) : void
+    + setDarkPieceColor(color : Color) : void
+    + setBoardSize(size : int) : void
+    + setPieceSize(size : int) : void
+
+    + makeBoard() : void
+    + actionPerformed(e : ActionEvent) : void
+    + mouseClicked(e : MouseEvent) : void
+    + mousePressed(e : MouseEvent) : void
+    + mouseReleased(e : MouseEvent) : void
+    + mouseEntered(e : MouseEvent) : void
+    + mouseExited(e : MouseEvent) : void
+
+    - showWinnerDialog(winnerColor : String, loserColor : String) : void
+    - makeMenuBar() : void
+    - createAlphaPanel() : JPanel
+    - createNumericPanel() : JPanel
+    - getUnicodeForPiece(piece : Piece) : String
+    - syncGuiFromBoard() : void
+    - attemptMove(fromGui : GUISquare, toGui : GUISquare) : void
+    - handlePromotion(dest : BoardSquare) : void
+    - guiRowToBoardRow(guiRow : int) : int
+    - guiColToBoardCol(guiCol : int) : int
+  }
+
+  class GUIOptions extends JDialog {
+    - lightSquaresColor : Color
+    - darkSquaresColor : Color
+    - lightPiecesColor : Color
+    - darkPiecesColor : Color
+    - lightColors : Color[]
+    - darkColors : Color[]
+    - boardSize : Integer
+    - sizeCheck : int
+
+    + GUIOptions(game : GUIBoard)
+    + makeMiddle() : void
+    + makeBottom(g : GUIBoard) : void
+    + applyChoices(g : GUIBoard) : void
+    + closeDialog() : void
+  }
+
+  class "GUI.Square" as GUISquare extends JButton {
+    - col : int
+    - row : int
+    - isLightSquare : boolean
+
+    + Square(row : int, col : int)
+    + getCol() : int
+    + getRow() : int
+    + isLightSquare() : boolean
+    + setColumn(c : int) : void
+    + setRow(r : int) : void
+    + equals(obj : Object) : boolean
+  }
+}
+
+' ======================
+' Relationships
+' ======================
+
+' Board composition of backend Squares
+Board "1" *-- "64" BoardSquare
+
+' Board uses Pieces & constants
+Board --> Piece
+Board ..> PromotionChoice
+Board ..> Constants
+
+' Pieces know their Square
+Piece --> BoardSquare
+
+/'
+' Inheritance for pieces
+Piece <|-- Pawn
+Piece <|-- Rook
+Piece <|-- King
+Piece <|-- Queen
+Piece <|-- Bishop
+Piece <|-- Knight
+'/
+
+' GUIBoard has its own GUI squares and a Board
+GUIBoard "1" *-- "64" GUISquare
+GUIBoard --> Board
+GUIBoard ..> GUIOptions
+GUIOptions ..> GUIBoard
+GUIBoard ..> Constants
+
+@enduml

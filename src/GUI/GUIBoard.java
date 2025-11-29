@@ -86,8 +86,8 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         boardPanel.setPreferredSize(new Dimension(800, 800));
 
         //Create the chess board squares and pieces
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
+        for (int row = 0; row < Constants.GUI_ROWS; row++) {
+            for (int col = 0; col < Constants.GUI_COLS; col++) {
                 // Create a new Square
                 Square square = new Square(row, col);
 
@@ -319,12 +319,12 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
         boolean isWhite = piece.getColor();
 
         return switch (piece) {
-            case King king -> isWhite ? "♔" : "♚";   //"\u2654" : "\u265A"
+            case King king -> isWhite ? "♔" : "♚";     //"\u2654" : "\u265A"
             case Queen queen -> isWhite ? "♕" : "♛";   //"\u2655" : "\u265B"
-            case Rook rook -> isWhite ? "♖" : "♜";   //"\u2656" : "\u265C"
-            case Bishop bishop -> isWhite ? "♗" : "♝";   //"\u2657" : "\u265D"
-            case Knight knight -> isWhite ? "♘" : "♞";   //"\u2658" : "\u265E"
-            case Pawn pawn -> isWhite ? "♙" : "♟";   //"\u2659" : "\u265F"
+            case Rook rook -> isWhite ? "♖" : "♜";     //"\u2656" : "\u265C"
+            case Bishop bishop -> isWhite ? "♗" : "♝"; //"\u2657" : "\u265D"
+            case Knight knight -> isWhite ? "♘" : "♞"; //"\u2658" : "\u265E"
+            case Pawn pawn -> isWhite ? "♙" : "♟";     //"\u2659" : "\u265F"
             default -> "";
         };
 

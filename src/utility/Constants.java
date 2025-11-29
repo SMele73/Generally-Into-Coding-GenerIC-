@@ -9,6 +9,9 @@ public final class Constants {
     public final static int NUM_COLS = 9;
     public final static int NUM_ROWS = 9;
 
+    public static final int GUI_ROWS = 8;
+    public static final int GUI_COLS = 8;
+
     public enum PromotionChoice{QUEEN, ROOK, BISHOP, KNIGHT}
 
     private Constants() {
