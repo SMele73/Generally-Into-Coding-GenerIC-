@@ -30,6 +30,10 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
     private boolean whiteToMove = true;                                 //Keeps track of the current player
     private JLabel playerTurnLabel = new JLabel("White to move "); //Turn indicator
 
+    /**
+     * @see GUIOptions These setters are used by GUIOptions to modify the board
+     * All options go through each square on the board in turn.
+     */
     //Setters
     //These operations could be much more efficient if combined, but we're not exactly hurting for processor power
     public void setLightSquareColor(Color color) {
@@ -184,7 +188,9 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
     public void mouseEntered(MouseEvent e) {newSquare = (Square) e.getSource();}
 
     /**
-     * Whenever the cursor leaves a square, a flag is set
+     * This method sets a flag that determines whether a click is handled by the ActionPerformed listener (click-move)
+     * or the mousePressed and mouseReleased listeners (drag-move)
+     * @param e the event to be processed
      */
     @Override
     public void mouseExited(MouseEvent e) {
@@ -305,7 +311,6 @@ public class GUIBoard extends JFrame implements MouseListener, ActionListener {
             row.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
             row.setForeground(Color.WHITE);
             rowPanel.add(row);
-
         }
         return rowPanel;
     }

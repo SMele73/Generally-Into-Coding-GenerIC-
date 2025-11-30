@@ -12,6 +12,12 @@ import java.awt.event.ActionListener;
  */
 public class GUIOptions extends JDialog{
 
+    /**
+     * Most of the attributes are self-explanatory
+     * sizeCheck is assigned from the height of the game board calling this class and is set as a class-wide variable
+     * so the board doesn't need to be passed around as much. It's sole use is for determining which radio button should
+     * be pre-selected in the board sizing panel.
+     */
     //Private attributes
     private Color lightSquaresColor;
     private Color darkSquaresColor;
@@ -101,13 +107,13 @@ public class GUIOptions extends JDialog{
         JRadioButton small = new JRadioButton("Small");
         class smallListener implements ActionListener{
             @Override public void actionPerformed(ActionEvent e) {
-                boardSize = 400;}}
+                boardSize = 450;}}
         small.addActionListener(new smallListener());
 
         JRadioButton medium = new JRadioButton("Medium");
         class mediumListener implements ActionListener{
             @Override public void actionPerformed(ActionEvent e) {
-                boardSize = 600;}}
+                boardSize = 625;}}
         medium.addActionListener(new mediumListener());
 
         JRadioButton large = new JRadioButton("Large");
