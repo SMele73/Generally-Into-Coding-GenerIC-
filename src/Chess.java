@@ -1,14 +1,8 @@
-import board.Board;
-import game.Game;
+import GUI.GUIBoard;
 
 /**
- * Main class of the project. Calls the methods of the Game class in order.
+ * Main class of the project. Calls GUIBoard
  */
-public class Chess {
-    public static void main(String[] args) {
-        Game game = new Game();
-        game.start();
-        game.play();
-        game.end();
-    }
+public static void main(String[] args) {
+    new GUIBoard();
 }

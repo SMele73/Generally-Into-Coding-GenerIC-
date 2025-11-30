@@ -11,6 +11,7 @@ import java.util.Scanner;
  * The Game consists of two players and the Board they play on.
  * It handles the players, processes their moves for Board to use,
  * and determines the winner
+ * @deprecated Class was phased out in favor of GUIBoard
  */
 public class Game {
 
@@ -29,7 +30,6 @@ public class Game {
 
     public void start() {
         board = new Board();
-        board.displayBoard();
     }
 
     //Getters
@@ -48,7 +48,7 @@ public class Game {
      * discarded and another move requested. Once a move is successful,
      * the updated board is printed to the console
      */
-    public void play() {
+    /*public void play() {
         while(!checkmate){
             boolean legal = false;
             while (!legal) {
@@ -56,7 +56,7 @@ public class Game {
                 legal = sendMove(); //Attempt to perform move
             }
             currentPlayer = !currentPlayer; //Switch players
-            /*//Check if new current player is checkmated
+            *//*Check if new current player is checkmated
             if(board.isCheck(currentPlayer)){
                 checkmate = board.isCheckmate(currentPlayer);
                 if(checkmate){
@@ -69,10 +69,10 @@ public class Game {
                     if (surrender != 'Y') {
                         checkmate = false;}
                 }
-            }*/
+            }*//*
             board.displayBoard();           //Show new board state
         }
-    }
+    }*/
 
     /**
      * Ends the game, announcing the victor
@@ -113,7 +113,7 @@ public class Game {
      * confirm the move is legal and perform it
      * @return Boolean value. True if move was successfully performed
      */
-    public boolean sendMove() {
+    public String sendMove() {
         //Parse received move into square objects
         //Check if move is a castle attempt. If yes, check if castling is legal.
         //If yes, castle and end the move.

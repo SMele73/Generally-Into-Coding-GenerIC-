@@ -4,6 +4,9 @@ import board.Square;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Least realistic piece, IRL horses only rarely move in perfect Ls
+ */
 public class Knight extends Piece {
 
     public Knight(boolean color, Square square) {

@@ -2,14 +2,12 @@ package board;
 
 import pieces.*;
 import utility.Constants;
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * The Board is made up of a 2D array of squares.
- * It handles initial game setup, piece movement, movement validation (not notation validation),
- * and check(mate) checks.
+ * It serves as the backend for GUIBoard, handling piece placement, move validation, and check(mate) logic
  */
 public class Board {
 
@@ -22,9 +20,6 @@ public class Board {
      * more as a convenient place to temporarily store a piece through different function calls.
      */
     private Piece piece;
-    //Currently no need for an array at all
-    //private Array pieceStatus -- Single Boolean array for capture instead of 2 array lists?
-    //private ArrayList<Piece> pieces;
 
     //Default constructor
     public Board() {
@@ -34,6 +29,7 @@ public class Board {
                 squares[r][c] = new Square(r, c);
             }
         }
+        //Place pieces
         placeBlack();
         placeWhite();
     }
@@ -46,128 +42,101 @@ public class Board {
     private Piece getPiece() {
         return piece;
     }
-    /*public ArrayList<Piece> getLivePieces() {
-        return livePieces;
-    }
-    public ArrayList<Piece> getCapturedPieces() {
-        return capturedPieces;
-    }*/
 
     //Methods
 
     /**
-     * movePiece is the core of the program's logic. It receives and processes movement orders
+     * movePiece is the core of the program's logic. It receives, validates, and processes movement orders
      * @param from The original square of the piece to move
      * @param to The destination square of the piece to move
      * @param color The color of the current player, used for move validation
-     * @return A boolean value returned to callers. True indicates a successful move,
-     * false one that has failed and either never happened or was rolled back
+     * @return A string value is returned to callers. "Valid move" if valid, an explanatory message if not
+     * @throws IllegalArgumentException for invalid moves, sending a message back to GUIBoard for display to players
      */
-    public boolean movePiece(Square from, Square to, boolean color) {
+    public String movePiece(Square from, Square to, boolean color) {
         //Load corresponding squares on the board
         Square orig = squares[from.getRow()][from.getColumn()];
         Square dest = squares[to.getRow()][to.getColumn()];
+        Piece movingPiece = orig.getPiece();    // adding holder for moving piece to rollback
         piece = orig.getPiece();
 
-        //Prepare squares for a move invalidated by checks
-        Square rollbackFrom = squares[from.getRow()][from.getColumn()];
-        Piece backFrom = rollbackFrom.getPiece();
-        Square rollbackTo = squares[to.getRow()][to.getColumn()];
-        Piece backTo = rollbackTo.getPiece();
-
-        //Validate move
-        if (!validMove(orig, dest, color)) {
-            return false;
-        }
-
-        //Perform move
-        dest.setPiece(piece);
-        piece.setSquare(to); //Originally was set to dest rather than two. This should help avoid circular logic problems
-        orig.setPiece(null);
-
-        // Pawn Promotion
-        if (piece instanceof Pawn){
-            //white reaches 8 or black reaches 1
-            int promotionRow = piece.getColor() ? 8 : 1;
-            if(to.getRow() == promotionRow){
-                System.out.print("Promote pawn to (Q, R, B, N): ");
-                Scanner scan = new Scanner(System.in);
-                String choice = scan.nextLine().trim().toUpperCase();
-
-                Piece newPiece;
-                switch (choice) {
-                    case "R":
-                        newPiece = new Rook(piece.getColor(), dest);
-                        break;
-                    case "B":
-                        newPiece = new Bishop(piece.getColor(), dest);
-                        break;
-                    case "N":
-                        newPiece = new Knight(piece.getColor(), dest);
-                        break;
-                    default:
-                        newPiece = new Queen(piece.getColor(), dest);
-                        break;
-                }
-                dest.setPiece(newPiece);
-                System.out.println((piece.getColor() ? "White" : "Black") +
-                        " pawn promoted to " + newPiece.getClass().getSimpleName() + "! Congratulations!");
+        from = squares[from.getRow()][from.getColumn()];
+        piece = from.getPiece();
+        //Move validation
+        try {
+            if (piece == null) { //Does start square have a piece?
+                throw new IllegalArgumentException("No piece in that square!");
             }
-        }
+            if (from.getPiece().getColor() != color) { //Is that piece the current player's color?
+                throw new IllegalArgumentException("That piece is not your color.");
+            }
+            if (!piece.possibleMoves(squares).contains(to)) { //Is this a legal move for that piece?
+                throw new IllegalArgumentException("That is not a valid move for this piece");
+            }
+            //Color of a prospective capture is checked at the piece level and doesn't need to be rechecked here
 
-        //Check if self is now in check. If checkChecks find self in check, rollback the move
-        if (isCheck(color)){
-            System.out.println("Illegal move, you leave yourself in check");
-            //Rollback end square
-            piece = rollbackTo.getPiece();
-            piece.setSquare(to);
-            squares[to.getRow()][to.getColumn()] = rollbackTo;
-            //Rollback start square
-            piece = backFrom;
-            piece.setSquare(from);
-            squares[from.getRow()][from.getColumn()] = rollbackFrom;
-            return false;
+            // rollback for capture piece
+            Piece capturedPiece = dest.getPiece();
+
+            // Start process of move but be ready to rollback if it ends in friendly check
+            orig.setPiece(null);
+            dest.setPiece(movingPiece);
+            movingPiece.setSquare(dest);
+
+            if (isCheck(color)) {
+                System.out.println("Illegal move, you leave yourself in check");
+
+                // roll back move
+                dest.setPiece(capturedPiece);
+                if (capturedPiece != null) {
+                    capturedPiece.setSquare(dest);
+                }
+                orig.setPiece(movingPiece);
+                movingPiece.setSquare(orig);
+
+                throw new IllegalArgumentException("This move leaves you in check");
+            }
+
+            //After confirming move is valid, change movement flags on pawns, rooks, or king if needed.
+            if (movingPiece instanceof Pawn) {
+                ((Pawn) movingPiece).markMoved();
+            } else if (movingPiece instanceof King) {
+                ((King) movingPiece).markMoved();
+            } else if (movingPiece instanceof Rook) {
+                ((Rook) movingPiece).markMoved();
+            }
+
+            return "Valid move";
+        } catch (IllegalArgumentException e) {
+            return e.getMessage();
         }
-        return true;
     }
 
     /**
-     * Prints the state of the board to the console after each move
+     * Handles promotion of pawns, overwriting them with the chosen piece
+     * @param dest is the square the pawn landed on
+     * @param choice is which piece the pawn is promoting to
      */
-    public void displayBoard() {
-        System.out.println("  A  B  C  D  E  F  G  H");
-        for (int c = Constants.NUM_ROWS - 1; c > 0; c--) {
-            System.out.print(c + " "); //Prints row numbers on left
-            for (int r = 1; r < Constants.NUM_COLS; r++) {
-                Square square = squares[c][r];
-                if (square.getPiece() != null) { //Check for piece on space
-                    piece = square.getPiece();
-                    if (piece.getColor()) {      //If a piece is there, print letter for piece's color
-                        System.out.print("w");
-                    } else { //(!piece.getColor()
-                        System.out.print("b");
-                    }
-                    //Then print a letter corresponding to the type of piece
-                    if (piece.getClass().equals(Pawn.class)) {
-                        System.out.print("P ");
-                    } else if (piece.getClass().equals(Rook.class)) {
-                        System.out.print("R ");
-                    } else if (piece.getClass().equals(Queen.class)) {
-                        System.out.print("Q ");
-                    } else if (piece.getClass().equals(King.class)) {
-                        System.out.print("K ");
-                    } else if (piece.getClass().equals(Bishop.class)) {
-                        System.out.print("B ");
-                    } else { // (piece.getClass().equals(Knight.class))
-                        System.out.print("N ");
-                    }
-                } else if ((c + r) % 2 == 0)
-                    System.out.print("## "); //## for black spaces
-                else
-                    System.out.print("   "); //Blank for white
-            }
-            System.out.println();
+    public void promotePawn(Square dest, Constants.PromotionChoice choice) {
+        Piece current = dest.getPiece();
+
+        // accident/bug check
+        if (!(current instanceof Pawn)){
+            System.out.println("Error: promotePawn called on non-pawn piece");
+            return;
         }
+        boolean color = current.getColor();     //true = white, false = black
+        Piece newPiece = switch (choice) {
+            // enhanced switch statement to handle promotion choices
+            case KNIGHT -> new Knight(color, dest);
+            case ROOK -> new Rook(color, dest);
+            case BISHOP -> new Bishop(color, dest);
+            default -> new Queen(color, dest);
+        };
+        dest.setPiece(newPiece);
+        System.out.println((color ? "White" : "Black") +
+                " pawn promoted to " + newPiece.getClass().getSimpleName() +
+                "! Congratulations!");
     }
 
     /**
@@ -205,45 +174,6 @@ public class Board {
     }
 
     /**
-     * Move validation logic. Specifically, this function confirms that the origin square has a piece
-     * of the current player's color and that the desired move is legal for that kind of piece.
-     * @param from The original square of the piece to move
-     * @param to The destination square of the piece to move
-     * @param color The color of the current player, used for move validation
-     * @return A boolean value returned to callers. Returns true for valid moves.
-     * Returns false and prints an explanation for invalid moves.
-     * @throws IllegalArgumentException for invalid moves.
-     */
-    public boolean validMove(Square from, Square to, boolean color) {
-        from = squares[from.getRow()][from.getColumn()];
-        piece = from.getPiece();
-        //Move validation
-        try {
-            //Are the entered squares on the board?
-            /*Todo: Deletion candidate, board boundaries are checked during initial move validation
-            if (from.getRow() < 1 || from.getRow() > Constants.NUM_ROWS || from.getColumn() < 1 || from.getColumn() > Constants.NUM_COLS ||
-                    to.getRow() < 1 || to.getRow() > Constants.NUM_ROWS || to.getColumn() < 1 || to.getColumn() > Constants.NUM_COLS) {
-                throw new IllegalArgumentException("Invalid square(s)");
-            }*/
-            if (piece == null) { //Does start square have a piece?
-                throw new IllegalArgumentException("No piece in that square!");
-            }
-            if (from.getPiece().getColor() != color) { //Is that piece the current player's color?
-                throw new IllegalArgumentException("That piece is not your color.");
-            }
-            if (!piece.possibleMoves(squares).contains(to)) { //Is this a legal move for that piece?
-                throw new IllegalArgumentException("That move is not legal!");
-            }
-            return true;
-
-            //Color of a prospective capture is checked at the piece level and doesn't need to be rechecked here
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            return false;
-        }
-    }
-
-    /**
      * A brief check for if a particular king is in check.
      * @param targetKingColor determines which king is being checked for check
      * @return Boolean value, true if check check finds the king in check, false otherwise
@@ -264,45 +194,60 @@ public class Board {
 
     /**
      * Function intended to check if king in check is also in checkmate.
-     * Checkmate check function not fully functional
-     * Intended function functionality is to check each possible piece for a side in check
-     * to see if any possible move results in a non-check state.
-     * Currently implemented only for the king, and breaks turn flow by having the king execute
-     * the first possible move to get out of check then asks his side for another move
+     * Every possible move for the side in check is examined to see if any of them can break the check
      * @param color The color of the king being checkmate checked
      * @return Boolean value. True if check king is checkmated, false if normal check
      */
-    public boolean isCheckmate(boolean color){
-        //Find king to check checkmate
-        Square kingLoc = kingSearch(color);
-        Square kingDest = new Square(0, 0);  //Part of cheap isCheckmate impl
-        Piece kingCap = null;       //Part of cheap isCheckmate impl
+    public boolean isCheckmate(boolean color) {
+        // quick check check to avoid running the whole thing
+        if (!isCheck(color)) {
+            return false;
+        }
 
-        //Get possible moves of king in check
-        List<Square> kingMoves = (kingLoc.getPiece().possibleMoves(squares));
-        for (Square kingMove: kingMoves) {
-            //Setup rollback for possible king destination
-            /*Square*/ kingDest = kingMove;
-            /*Piece*/ kingCap = kingDest.getPiece();
+        // instead of just checking king checkmate evasion
+        // we need to check all pieces on board for checkmate evasion
+        for (int r =1; r < Constants.NUM_ROWS; r++) {
+            for (int c = 1; c < Constants.NUM_COLS; c++) {
+                Square from = squares[r][c];
+                Piece p = from.getPiece();
 
-            //If king is able to move to square without ending up in check,
-            //rollback the move and return false
-            if (movePiece(kingLoc, kingMove, color)){
-                squares[kingLoc.getRow()][kingLoc.getColumn()] = kingLoc;
-                squares[kingDest.getRow()][kingDest.getColumn()] = kingDest;
-                if (kingCap != null){
-                    kingCap.setSquare(kingDest);
+                // skip empty squares and wrong color pieces
+                if (p == null || p.getColor() != color){
+                    continue;
                 }
-                return false;
+                // create list of possible moves for pieces to check
+                List<Square> moves = p.possibleMoves(squares);
+
+                for (Square to : moves){
+                    // need holders for captured piece and square to move to
+                    Piece captured = to.getPiece();
+                    Square fromSq = p.getSquare();
+
+                    // try moving piece
+                    from.setPiece(null);
+                    to.setPiece(p);
+                    p.setSquare(to);
+
+                    // after moving check for check
+                    boolean stillInCheck = isCheck(color);
+
+                    // undo the move and roll back to check another move
+                    to.setPiece(captured);
+                    if (captured !=null) {
+                        captured.setSquare(to);
+                    }
+                    from.setPiece(p);
+                    p.setSquare(fromSq);
+
+                    // if we ever escape the check
+                    if (!stillInCheck) {
+                        return false;
+                    }
+                }
             }
         }
-        //Revert final king checkmate check
-        squares[kingLoc.getRow()][kingLoc.getColumn()] = kingLoc;
-        squares[kingDest.getRow()][kingDest.getColumn()] = kingDest;
-        if (kingCap != null){
-            kingCap.setSquare(kingDest);
-        }
-        return true; //If king has no valid moves, return true
+        // king has no escape route
+        return true;
     }
 
     //Helper methods
@@ -315,7 +260,7 @@ public class Board {
      * message and returns an out-of-bounds square (which would break things if an AWOL king
      * didn't already do that)
      */
-    public Square kingSearch ( boolean color){
+    public Square kingSearch( boolean color){
         for (int r = Constants.NUM_ROWS - 1; r > 0; r--) {
             for (int c = 1; c < Constants.NUM_COLS; c++) {
                 if (squares[r][c].getPiece() != null) {
@@ -329,7 +274,6 @@ public class Board {
         System.out.println("Fatal error 404, king not found.");
         return squares[0][0];
     }
-    //Determine if that square contains a piece that could capture the enemy king
 
     /**
      * Checks if the square holds a piece that can place an opposing king in check
@@ -391,10 +335,10 @@ public class Board {
     }
 
     // actually perform the castle
-    public boolean performCastling(boolean color, boolean kingside) {
+    public String performCastling(boolean color, boolean kingside) {
         if (!canCastle(color, kingside)) {
             System.out.println("Castling not allowed.");
-            return false;
+            return "Castling not allowed";
         }
 
         // set coordinates for move
@@ -421,7 +365,6 @@ public class Board {
         // output if successful by color and side
         System.out.println((color ? "White" : "Black") +
                 (kingside ? " castles kingside" : " castles queenside"));
-        return true;
+        return "Valid move";
     }
-
 }

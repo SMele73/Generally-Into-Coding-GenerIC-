@@ -6,7 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * The squares here are augmented buttons
+ * Class is the frontend version of a square: a button that has a row/column but is not given piece objects,
+ * those being handled by the backend
  */
 public class Square extends JButton {
     //Private attributes

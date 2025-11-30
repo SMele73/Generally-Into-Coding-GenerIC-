@@ -4,6 +4,9 @@ import board.Square;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Redshirts reporting!
+ */
 public class Pawn extends Piece {
 
     public Pawn(boolean color, Square square) {
