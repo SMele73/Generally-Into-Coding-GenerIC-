@@ -23,10 +23,11 @@ This project is a GUI-based Chess game developed as part of our Object-Oriented 
 ### Preview
 
 ### GUI Preview
-![Chess Game GUI](class_diagram.png)
-![Chess Game GUI](class_diagram.png)
-![Chess Game GUI](class_diagram.png)
-![Chess Game GUI](class_diagram.png)
+![Game Start](images/Game_Start.png)
+![Color Options](images/Color_Options.png)
+![Check](images/Check.png)
+![Check Mate](images/Check_Mate.png)
+![Pawn Promotion](images/Promotion.png)
 ### Class Diagram
 ![Class Diagram](images/Class_Diagram.png)
 
